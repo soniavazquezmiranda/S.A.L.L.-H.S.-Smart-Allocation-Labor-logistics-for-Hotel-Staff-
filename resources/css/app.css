@@ -1,11 +1,36 @@
-@import 'tailwindcss';
+/* resources/css/app.css */
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+/* 1. Importación e inyección del motor moderno de Tailwind CSS */
+@import "tailwindcss";
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+/* 2. Estilos Personalizados Premium del Hotel S.A.L.L. (Navy Blue & Golden Amber) */
+@layer utilities {
+  .bg-navy-dark { background-color: #0B192C; }
+  .bg-navy-light { background-color: #1E3E62; }
+  .text-amber-gold { color: #F1C40F; }
+  .border-amber-gold { border-color: #F1C40F; }
+
+  /* Efecto interactivo de las celdas del mapa de habitaciones */
+  .room-cell {
+    border: 1px solid #e2e8f0;
+    font-size: 11px;
+    padding: 6px 4px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s ease;
+  }
+  
+  .room-cell:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
+  }
+
+  /* Estados de limpieza del hotel unificados */
+  .status-L { background-color: #ffffff; color: #0f172a; border-color: #cbd5e1; } /* Lista */
+  .status-S { background-color: #fff1f2; color: #be123c; border-color: #fecdd3; font-weight: bold; } /* Sucia / Checkout */
+  .status-P { background-color: #fef3c7; color: #b45309; border-color: #fde68a; font-weight: bold; } /* En Proceso */
+  .status-A { background-color: #f1f5f9; color: #64748b; border-style: dashed; } /* Mantenimiento */
 }
+

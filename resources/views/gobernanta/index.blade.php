@@ -1,32 +1,6 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>S.A.L.L. H.S. - Cuadro de Mandos Gobernanta</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Inter', sans-serif; }
-    .room-cell {
-      border: 1px solid #e2e8f0;
-      font-size: 11px;
-      padding: 6px 4px;
-      border-radius: 8px;
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
-      transition: all 0.15s ease;
-    }
-    .room-cell:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-    .status-L { background-color: #ffffff; color: #0f172a; border-color: #cbd5e1; }
-    .status-S { background-color: #fff1f2; color: #be123c; border-color: #fecdd3; font-weight: bold; }
-    .status-P { background-color: #fef3c7; color: #b45309; border-color: #fde68a; font-weight: bold; }
-    .status-A { background-color: #f1f5f9; color: #64748b; border-style: dashed; }
-  </style>
-</head>
-<body class="bg-slate-100 min-h-screen p-4 md:p-8 text-slate-800">
+@extends('layouts.app') <!-- Hereda la cabecera, Tailwind y la barra lateral una sola vez -->
 
+@section('content')
   <div class="max-w-7xl mx-auto space-y-6">
 
     <!-- HEADER (Navy Blue) -->
@@ -36,7 +10,7 @@
           S
         </div>
         <div>
-          <h1 class="text-xl font-bold tracking-tight">HOTEL GRAND CENTRAL — CUADRO DE MANDOS GOBERNANTA</h1>
+          <h1 class="text-xl font-bold tracking-tight">HOTEL S.A.L.L. — CUADRO DE MANDOS GOBERNANTA</h1>
           <p class="text-xs text-slate-300 mt-0.5">S.A.L.L. H.S. Housekeeping & Management Dashboard</p>
         </div>
       </div>
@@ -45,7 +19,7 @@
         <span class="px-3 py-1.5 bg-slate-800 border border-slate-700 text-amber-400 font-semibold rounded-lg uppercase tracking-wider">
           Rol: Gobernanta / Dirección
         </span>
-        <span class="text-slate-200">Usuario: <strong class="text-white">{{ auth()->user()->name ?? 'Alonso' }}</strong></span>
+        <span class="text-slate-200">Usuario: <strong class="text-white">{{ auth()->user()->name ?? 'Sonia' }}</strong></span>
         <div class="flex items-center gap-2 bg-emerald-950/80 border border-emerald-700 px-3 py-1 rounded-lg text-emerald-300 text-[11px] font-semibold">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           <span>PDA Reverb Sync</span>
@@ -162,10 +136,7 @@
       document.getElementById('row-floor-3').style.display = (floor === 'all' || floor === '3') ? 'block' : 'none';
     }
 
-    window.onload = function() {
-      initRooms();
-      renderMap();
-    };
+    initRooms();
+    renderMap();
   </script>
-</body>
-</html>
+@endsection

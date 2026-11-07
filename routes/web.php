@@ -2,63 +2,88 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ShiftController;
+use App\Http\Controllers\RecepcionController;
+use App\Http\Controllers\ComercialController;
+use App\Http\Controllers\GobernantaController;
 
-// 1. Ruta de la página de bienvenida
+// 1. RUTA DE BIENVENIDA
 Route::get('/', function () {
     return view('welcome');
 });
 
-// 2. RUTA PRINCIPAL DE LA PDA (Carga el archivo resources/views/pda/index.blade.php)
-Route::get('/pda', [TaskController::class, 'index'])->name('pda.index');
-
-// Rutas de gestión de tareas
-Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
-Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
-Route::patch('/tasks/{id}/estado', [TaskController::class, 'cambiarEstado'])->name('tareas.cambiarEstado');
-
-// 3. ENLACES PARA LOS FICHAJES LABORALES (ShiftController)
-Route::get('/shifts', [ShiftController::class, 'index'])->name('shifts.index');
-Route::post('/shifts/clock-in', [ShiftController::class, 'clockIn'])->name('shifts.clockIn');
-Route::post('/pda/fichar', [ShiftController::class, 'clockIn'])->name('pda.fichar');
-Route::put('/shifts/{id}/clock-out', [ShiftController::class, 'clockOut'])->name('shifts.clockOut');
-
-// 4. AUTENTICACIÓN / LOGIN
-// Ruta para mostrar el formulario de login (GET)
+// 2. AUTENTICACIÓN / LOGIN (Público)
 Route::get('/login', function () {
+    if (Auth::check()) {
+        return redirect()->to(match(Auth::user()->role) {
+            'Admin', 'Limpieza', 'Mantenimiento' => '/pda',
+            'Recepcion' => '/recepcion',
+            'Comercial' => '/comercial',
+            default => '/',
+        });
+    }
     return view('auth.login');
 })->name('login');
 
-// Ruta para procesar el inicio de sesión (POST)
 Route::post('/login', function (Request $request) {
-    return redirect('/pda');
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+        
+        return redirect()->to(match(Auth::user()->role) {
+            'Admin', 'Limpieza', 'Mantenimiento' => '/pda',
+            'Recepcion' => '/recepcion',
+            'Comercial' => '/comercial',
+            default => '/',
+        });
+    }
+
+    return back()->withErrors(['email' => 'Las credenciales no coinciden con nuestros registros.']);
 })->name('login.post');
 
-// Ruta para el Panel de Recepción
-Route::get('/recepcion', function () {
-    // Si Alonso ya tiene datos en la DB los toma de ahí, o pasa una colección vacía
-    $rooms = class_exists(Room::class) ? Room::all() : collect([]);
+Route::post('/logout', function (Request $request) {
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/login');
+})->name('logout');
+
+
+// 3. RUTAS PROTEGIDAS (100% Unificadas en Español para evitar errores)
+Route::middleware(['auth'])->group(function () {
+
+    //  ZONA: RECEPCIÓN
+    Route::middleware(['role:Recepcion'])->group(function () {
+        Route::get('/recepcion', [RecepcionController::class, 'index'])->name('recepcion.index');
+    });
+
+    //  ZONA: GOBERNANTA
+    Route::middleware(['role:Limpieza'])->group(function () {
+        Route::get('/gobernanta', [GobernantaController::class, 'index'])->name('gobernanta.index');
+        Route::get('/gobernanta/tareas', [TaskController::class, 'index'])->name('tasks.index');
+        Route::post('/gobernanta/tareas/crear', [TaskController::class, 'store'])->name('tasks.store');
+    });
+
+    // ZONA: COMERCIAL
+    Route::middleware(['role:Comercial'])->group(function () {
+        Route::get('/comercial', [ComercialController::class, 'index'])->name('comercial.index');
+        Route::post('/comercial/reservar', [ComercialController::class, 'store'])->name('comercial.store');
+    });
+
+    //  ZONA: TERMINAL PDA MÓVIL Y FICHAJES (Nombres en perfecto castellano)
+    Route::get('/pda', [ShiftController::class, 'index'])->name('pda.index');
     
-    return view('recepcion.index', [
-        'rooms' => $rooms,
-        'totalRooms' => $rooms->count() ?: 52,
-        'occupiedRooms' => $rooms->where('status', 'OCUPADA')->count() ?: 38,
-        'pendingCheckouts' => 9,
-        'dirtyRooms' => $rooms->where('status', 'SUCIA')->count() ?: 5,
-    ]);
-})->name('recepcion.index');
-
-// Ruta para el Panel Comercial
-Route::get('/comercial', function () {
-    return view('comercial.index', [
-        'events' => collect([]), // Se conectará a la tabla 'events' o 'tasks'
-    ]);
-})->name('comercial.index');
-
-// Ruta para el Cuadro de Mandos de Gobernanta
-Route::get('/shifts', function () {
-    return view('gobernanta.index', [
-        'completedTasks' => collect([]),
-    ]);
-})->name('shifts.index');
+    // Corregido: Mapeado exactamente con el nombre de ruta que pide el HTML de la vista
+    Route::post('/pda/fichar', [ShiftController::class, 'clockIn'])->name('pda.fichar');
+    Route::post('/pda/salir', [ShiftController::class, 'clockOut'])->name('pda.salir');
+    
+    // Acciones operativas sobre los cometidos en la PDA
+    Route::post('/pda/tarea/{id}/empezar', [TaskController::class, 'start'])->name('tasks.start');
+    Route::post('/pda/tarea/{id}/completar', [TaskController::class, 'complete'])->name('tasks.complete');
+});

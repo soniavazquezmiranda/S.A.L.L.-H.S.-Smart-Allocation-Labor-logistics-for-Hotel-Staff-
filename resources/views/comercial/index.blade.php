@@ -1,17 +1,6 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>S.A.L.L. H.S. - Panel Comercial</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Inter', sans-serif; }
-  </style>
-</head>
-<body class="bg-slate-100 min-h-screen p-4 md:p-8 text-slate-800">
+@extends('layouts.app') <!-- Hereda la cabecera, Tailwind y la barra lateral una sola vez -->
 
+@section('content')
   <div class="max-w-7xl mx-auto space-y-6">
 
     <!-- HEADER (Navy Blue) -->
@@ -86,7 +75,7 @@
             <select name="room_id" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl focus:ring-2 focus:ring-amber-500 text-xs">
               <option value="Salón Mirador">Salón Mirador (Capacidad 120 pax · P3)</option>
               <option value="Salón Noble">Salón Noble (Capacidad 80 pax · PB)</option>
-              <option value="Sala VIP Ejecutiva">Sala VIP Ejecutiva (Capacidad 25 pax · P1)</option>
+              <option value="Sala VIP Executiva">Sala VIP Ejecutiva (Capacidad 25 pax · P1)</option>
             </select>
           </div>
 
@@ -137,69 +126,9 @@
               </select>
             </div>
           </div>
-
-          <div class="pt-2">
-            <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl shadow-md hover:shadow-lg transition-all transform active:scale-95">
-              + Registrar Evento y Disparar PDAs
-            </button>
-          </div>
         </form>
       </section>
 
-      <!-- CALENDARIO DE EVENTOS -->
-      <section class="lg:col-span-7 bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
-        <div class="bg-gradient-to-r from-slate-900 to-indigo-950 p-4 text-white flex justify-between items-center">
-          <div>
-            <span class="text-[10px] uppercase font-bold text-amber-400 block tracking-wider">Calendario Diario</span>
-            <h2 class="text-sm font-bold">Eventos y Salones Programados (Hoy)</h2>
-          </div>
-          <span class="text-xs bg-slate-800 border border-slate-700 text-slate-200 px-3 py-1 rounded-lg font-semibold">22/10/2026</span>
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase text-[10px] tracking-wider">
-              <tr>
-                <th class="p-3.5 font-bold">Salón</th>
-                <th class="p-3.5 font-bold">Cliente</th>
-                <th class="p-3.5 font-bold">Horario / Pax</th>
-                <th class="p-3.5 font-bold">Estado</th>
-                <th class="p-3.5 font-bold text-right">Cometidos PDA</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100 text-xs">
-              <tr class="hover:bg-slate-50 transition-colors">
-                <td class="p-3.5 font-bold text-slate-900">Salón Mirador</td>
-                <td class="p-3.5 font-medium text-slate-700">Asoc. Médica Regional</td>
-                <td class="p-3.5 text-slate-500">09:30 - 13:00 <span class="font-bold text-slate-900">(60 pax)</span></td>
-                <td class="p-3.5">
-                  <span class="px-2.5 py-1 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold text-[10px]">EN CURSO</span>
-                </td>
-                <td class="p-3.5 text-right">
-                  <span class="block text-[10px] font-semibold text-slate-800">🍽️ Montaje completado</span>
-                  <span class="block text-[10px] text-slate-400">🧹 Limpieza previa lista</span>
-                </td>
-              </tr>
-              <tr class="hover:bg-slate-50 transition-colors">
-                <td class="p-3.5 font-bold text-slate-900">Salón Noble</td>
-                <td class="p-3.5 font-medium text-slate-700">Grupo Financiero Alfa</td>
-                <td class="p-3.5 text-slate-500">16:00 - 19:30 <span class="font-bold text-slate-900">(40 pax)</span></td>
-                <td class="p-3.5">
-                  <span class="px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 font-bold text-[10px]">MONTAJE PENDIENTE</span>
-                </td>
-                <td class="p-3.5 text-right">
-                  <span class="block text-[10px] font-semibold text-slate-800">🍽️ Asignado a Sala</span>
-                  <span class="block text-[10px] text-slate-400">🧹 Desinfección programada</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
     </div>
-
   </div>
-
-</body>
-</html>
+@endsection

@@ -7,96 +7,72 @@ use App\Models\User;
 use App\Models\Department;
 use App\Models\Room;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // 1. Crear los Departamentos obligatorios en Inglés
-        $managementDept = Department::create([
-            'name' => 'Management',
-            'description' => 'Dirección general y administración del hotel.'
-        ]);
+        // Limpieza automática previa para evitar errores de duplicados
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Room::truncate();
+        User::truncate();
+        Department::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $receptionDept = Department::create([
-            'name' => 'Reception',
-            'description' => 'Atención al cliente, reservas de estancias y alquiler de salones.'
-        ]);
+        // 1. Crear los Departamentos obligatorios del Hotel
+        $managementDept = Department::create(['name' => 'Management', 'description' => 'Dirección general y administración.']);
+        $receptionDept = Department::create(['name' => 'Reception', 'description' => 'Atención al cliente y reservas.']);
+        $housekeepingDept = Department::create(['name' => 'Housekeeping', 'description' => 'Limpieza de habitaciones y salones.']);
+        $maintenanceDept = Department::create(['name' => 'Maintenance', 'description' => 'Reparación de averías e infraestructura.']);
+        $restaurantDept = Department::create(['name' => 'Restaurant', 'description' => 'Personal de buffet, comedores y eventos.']);
 
-        $housekeepingDept = Department::create([
-            'name' => 'Housekeeping',
-            'description' => 'Mantenimiento higiénico de habitaciones, salones y zonas comunes.'
-        ]);
-
-        $maintenanceDept = Department::create([
-            'name' => 'Maintenance',
-            'description' => 'Mantenimiento preventivo y reparación de averías de la infraestructura.'
-        ]);
-
-        $restaurantDept = Department::create([
-            'name' => 'Restaurant',
-            'description' => 'Personal de sala, banquetes, buffet y desayunos.'
-        ]);
-
-        // 2. Crear tus Empleados de prueba adaptados a los Roles en inglés
+        // 2. Crear Empleados del Hotel S.A.L.L. (Contraseña: 12345678)
         User::create([
-            'name' => 'Julio Director',
-            'email' => 'direccion@sall.com',
-            'password' => Hash::make('12345678'),
-            'role' => 'Management',
-            'department_id' => $managementDept->id
+            'name' => 'Julio', 'email' => 'julio@sall.com', 'password' => Hash::make('12345678'),
+            'role' => 'Admin', 'department_id' => $managementDept->id
         ]);
 
         User::create([
-            'name' => 'LuzMila Recepcionista',
-            'email' => 'recepcion@sall.com',
-            'password' => Hash::make('12345678'),
-            'role' => 'Reception',
-            'department_id' => $receptionDept->id
+            'name' => 'Ludmila', 'email' => 'ludmila@sall.com', 'password' => Hash::make('12345678'),
+            'role' => 'Admin', 'department_id' => $managementDept->id
         ]);
 
         User::create([
-            'name' => 'Sonia Gobernanta',
-            'email' => 'limpieza@sall.com',
-            'password' => Hash::make('12345678'),
-            'role' => 'Housekeeping',
-            'department_id' => $housekeepingDept->id
+            'name' => 'Recepción', 'email' => 'recepcion@sall.com', 'password' => Hash::make('12345678'),
+            'role' => 'Recepcion', 'department_id' => $receptionDept->id
         ]);
 
         User::create([
-            'name' => 'Alonso Técnico',
-            'email' => 'mantenimiento@sall.com',
-            'password' => Hash::make('12345678'),
-            'role' => 'Maintenance',
-            'department_id' => $maintenanceDept->id
+            'name' => 'Sonia', 'email' => 'sonia@sall.com', 'password' => Hash::make('12345678'),
+            'role' => 'Limpieza', 'department_id' => $housekeepingDept->id
         ]);
 
         User::create([
-            'name' => 'Camarero Staff',
-            'email' => 'restaurante@sall.com',
-            'password' => Hash::make('12345678'),
-            'role' => 'Restaurant',
-            'department_id' => $restaurantDept->id
+            'name' => 'Alonso', 'email' => 'alonso@sall.com', 'password' => Hash::make('12345678'),
+            'role' => 'Mantenimiento', 'department_id' => $maintenanceDept->id
         ]);
 
-        // 3. Crear Habitaciones y Salones de prueba en Inglés
-        Room::create([
-            'room_number' => '101', 'floor' => 1, 'type' => 'Single', 'status' => 'Available'
+        User::create([
+            'name' => 'Loli', 'email' => 'loli@sall.com', 'password' => Hash::make('12345678'),
+            'role' => 'Comercial', 'department_id' => $managementDept->id
         ]);
-        Room::create([
-            'room_number' => '102', 'floor' => 1, 'type' => 'Executive Suite', 'status' => 'Available'
+
+        // ¡NUEVO! Añadimos al Maître de restauración unificado con acceso a la PDA
+        User::create([
+            'name' => 'Maître Sergio', 
+            'email' => 'maitre@sall.com', // Correo corporativo limpio
+            'password' => Hash::make('12345678'),
+            'role' => 'Limpieza', // Rol operativo para que el Middleware le deje ver la PDA
+            'department_id' => $restaurantDept->id // Vinculado a Restauración
         ]);
-        Room::create([
-            'room_number' => '201', 'floor' => 2, 'type' => 'Standard Double', 'status' => 'Cleaning'
-        ]);
-        Room::create([
-            'room_number' => 'Salón Real', 'floor' => 0, 'type' => 'Lounge', 'status' => 'Available'
-        ]);
-        Room::create([
-            'room_number' => 'Zona Restaurante Buffet', 'floor' => 0, 'type' => 'Restaurant', 'status' => 'Available'
-        ]);
+
+        // 3. Crear Habitaciones, Salones, Restaurante y el Patio del Hotel
+        Room::create(['room_number' => '101', 'floor' => 1, 'type' => 'Single', 'status' => 'Available']);
+        Room::create(['room_number' => '102', 'floor' => 1, 'type' => 'Executive Suite', 'status' => 'Available']);
+        Room::create(['room_number' => '201', 'floor' => 2, 'type' => 'Standard Double', 'status' => 'Cleaning']);
+        Room::create(['room_number' => 'Salón Real', 'floor' => 0, 'type' => 'Lounge', 'status' => 'Available']);
+        Room::create(['room_number' => 'Zona Restaurante Buffet', 'floor' => 0, 'type' => 'Restaurant', 'status' => 'Available']);
+        Room::create(['room_number' => 'Patio Andaluz Central', 'floor' => 0, 'type' => 'Courtyard', 'status' => 'Available']);
     }
 }

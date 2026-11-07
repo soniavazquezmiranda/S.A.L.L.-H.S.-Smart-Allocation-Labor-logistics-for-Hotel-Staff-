@@ -3,54 +3,85 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\Room;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
-    // 1. FUNCIÓN PARA VER TODAS LAS TAREAS
+    /**
+     * Lista todas las tareas en el panel de control técnico o gobernanta
+     */
     public function index()
     {
-        // Trae todas las tareas de la base de datos
-        $tareas = Task::all(); 
+        $tareas = Task::with(['room', 'user'])->orderBy('created_at', 'desc')->get(); 
+        $habitaciones = Room::all();
+        $empleados = User::whereIn('role', ['Limpieza', 'Mantenimiento'])->get();
 
-        // Devuelve las tareas en un formato limpio para la pantalla
-        return response()->json($tareas);
+        return view('gobernanta.index', compact('tareas', 'habitaciones', 'empleados'));
     }
 
-    // 2. FUNCIÓN PARA CREAR UNA NUEVA TAREA
+    /**
+     * Crea una nueva tarea (Disparador manual o por Check-out)
+     */
     public function store(Request $request)
     {
-        // Guarda en la base de datos lo que se escribe en el formulario
-        $nuevaTarea = Task::create([
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'room_id' => 'required|exists:rooms,id',
+            'priority' => 'required|in:Low,Medium,High',
+            'user_id' => 'nullable|exists:users,id'
+        ]);
+
+        Task::create([
             'title' => $request->title,
             'description' => $request->description,
+            'room_id' => $request->room_id,
+            'user_id' => $request->user_id,
             'priority' => $request->priority,
-            'status' => 'Pending' // Empieza siempre como Pendiente
+            'status' => 'Pending',
+            'is_urgent' => $request->priority === 'High' ? 1 : 0
         ]);
 
-        // Avisa que la tarea se creó bien
-        return response()->json([
-            'mensaje' => '¡Tarea creada con éxito!',
-            'tarea' => $nuevaTarea
-        ]);
+        // Si la habitación estaba ocupada, pasa a estar en estado de Limpieza (Cleaning)
+        $room = Room::find($request->room_id);
+        if ($room && $room->status === 'Occupied') {
+            $room->update(['status' => 'Cleaning']);
+        }
+
+        return redirect()->back()->with('success', '¡Tarea creada con éxito!');
     }
 
-    // 3. FUNCIÓN PARA MARCAR UNA TAREA COMO COMPLETADA (Desde la PDA)
+    /**
+     * El operario inicia la tarea desde la PDA
+     */
+    public function start($id)
+    {
+        $tarea = Task::findOrFail($id);
+        $tarea->update([
+            'status' => 'In_Progress',
+            'user_id' => Auth::id() // Se autoasigna al empleado que le da al botón
+        ]);
+
+        return redirect()->back()->with('success', 'Tarea iniciada en tu terminal.');
+    }
+
+    /**
+     * El operario completa la tarea y libera automáticamente la habitación
+     */
     public function complete($id)
     {
-        // Busca la tarea en la base de datos usando su ID
-        $tarea = Task::find($id);
+        $tarea = Task::findOrFail($id);
+        $tarea->update(['status' => 'Completed']);
 
-        // Le cambia el estado a completada
-        $tarea->status = 'Completed';
+        // Al terminar de limpiar, la habitación vuelve a estar en Disponible (Available)
+        $room = Room::find($tarea->room_id);
+        if ($room && $room->status === 'Cleaning') {
+            $room->update(['status' => 'Available']);
+        }
 
-        // Guarda el cambio definitivo en la base de datos
-        $tarea->save();
-
-        // Avisa que se actualizó correctamente
-        return response()->json([
-            'mensaje' => '¡Tarea completada en la PDA!',
-            'tarea' => $tarea
-        ]);
+        return redirect()->back()->with('success', ' ¡Tarea completada! Habitación disponible.');
     }
 }

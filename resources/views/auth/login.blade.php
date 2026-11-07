@@ -4,25 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>S.A.L.L. H.S. - Iniciar Sesión</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
+    <!-- Vinculación con vuestro CSS e inyección del motor de Tailwind -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
 
     <div class="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
-        <!-- Синяя шапка (Navy Blue) -->
+        <!-- Cabecera Corporativa (Navy Blue) -->
         <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-8 text-center text-white relative">
-            <div class="w-12 h-12 mx-auto mb-3 bg-amber-500 rounded-xl flex items-center justify-center shadow-lg text-slate-950 font-black text-xl">
+            <div class="w-12 h-12 mx-auto mb-3 bg-amber-400 rounded-xl flex items-center justify-center shadow-lg text-slate-950 font-black text-xl">
                 S
             </div>
             <h1 class="text-2xl font-bold tracking-tight">S.A.L.L. H.S.</h1>
             <p class="text-xs text-slate-300 mt-1 uppercase tracking-wider font-medium">Sistema de Gestión Hotelera</p>
         </div>
 
-        <!-- Форма с золотой кнопкой -->
+        <!-- Formulario Conectado a la Base de Datos -->
         <div class="p-8">
             <form action="{{ route('login.post') }}" method="POST" class="space-y-5">
                 @csrf
