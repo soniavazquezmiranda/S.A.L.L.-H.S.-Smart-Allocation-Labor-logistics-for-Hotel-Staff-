@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>S.A.L.L. H.S. - Iniciar Sesión</title>
     <!-- Vinculación con vuestro CSS e inyección del motor de Tailwind -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+   <script src="https://cdn.tailwindcss.com"></script>
+    {{-- @vite(['resources/css/app.css', 'resources/js/app.js'])--}}
 </head>
 <body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
 
