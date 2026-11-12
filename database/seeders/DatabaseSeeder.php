@@ -28,22 +28,9 @@ class DatabaseSeeder extends Seeder
         $restaurantDept = Department::create(['name' => 'Restaurant', 'description' => 'Personal de buffet, comedores y eventos.']);
 
         // 2. Crear Empleados del Hotel S.A.L.L. (Contraseña: 12345678)
-        User::create([
-            'name' => 'Julio', 'email' => 'julio@sall.com', 'password' => Hash::make('12345678'),
-            'role' => 'Admin', 'department_id' => $managementDept->id
-        ]);
 
         User::create([
-            'name' => 'Alonso', 'email' => 'Alonso@sall.com', 'password' => Hash::make('12345678'),
-            'role' => 'Admin', 'department_id' => $managementDept->id
-        ]);
-        User::create([
-            'name' => 'Sonia', 'email' => 'sonia@sall.com', 'password' => Hash::make('12345678'),
-            'role' => 'Admin', 'department_id' => $managementDept->id
-        ]);
-
-        User::create([
-            'name' => 'Liudmyla', 'email' => 'liudmyla@sall.com', 'password' => Hash::make('12345678'),
+            'name' => 'Admin', 'email' => 'admin@sall.com', 'password' => Hash::make('12345678'),
             'role' => 'Admin', 'department_id' => $managementDept->id
         ]);
 
