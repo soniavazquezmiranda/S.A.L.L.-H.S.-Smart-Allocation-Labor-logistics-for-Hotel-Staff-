@@ -34,6 +34,15 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::create([
+            'name' => 'Alonso', 'email' => 'Alonso@sall.com', 'password' => Hash::make('12345678'),
+            'role' => 'Admin', 'department_id' => $managementDept->id
+        ]);
+        User::create([
+            'name' => 'Sonia', 'email' => 'sonia@sall.com', 'password' => Hash::make('12345678'),
+            'role' => 'Admin', 'department_id' => $managementDept->id
+        ]);
+
+        User::create([
             'name' => 'Liudmyla', 'email' => 'liudmyla@sall.com', 'password' => Hash::make('12345678'),
             'role' => 'Admin', 'department_id' => $managementDept->id
         ]);
@@ -44,17 +53,17 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::create([
-            'name' => 'Sonia', 'email' => 'sonia@sall.com', 'password' => Hash::make('12345678'),
+            'name' => 'Limpieza', 'email' => 'limpieza@sall.com', 'password' => Hash::make('12345678'),
             'role' => 'Limpieza', 'department_id' => $housekeepingDept->id
         ]);
 
         User::create([
-            'name' => 'Alonso', 'email' => 'alonso@sall.com', 'password' => Hash::make('12345678'),
+            'name' => 'Mantenimiento', 'email' => 'mantenimiento@sall.com', 'password' => Hash::make('12345678'),
             'role' => 'Mantenimiento', 'department_id' => $maintenanceDept->id
         ]);
 
         User::create([
-            'name' => 'Loli', 'email' => 'loli@sall.com', 'password' => Hash::make('12345678'),
+            'name' => 'Comercial', 'email' => 'comercial@sall.com', 'password' => Hash::make('12345678'),
             'role' => 'Comercial', 'department_id' => $managementDept->id
         ]);
 
