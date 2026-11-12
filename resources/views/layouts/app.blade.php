@@ -38,7 +38,6 @@
 
     @php
         $userRole = auth()->user()->role ?? 'Comercial';
-        // Determinar si el usuario tiene navegación multi-página o es de vista única
         $hasMultiPageNav = in_array($userRole, ['Admin', 'Limpieza', 'Gobernanta']);
     @endphp
 
@@ -69,23 +68,47 @@
                 </div>
 
                 <nav class="space-y-1.5 xl:space-y-2 text-xs font-medium">
-                    <a href="{{ route('gobernanta.index') }}" 
-                       class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
-                        <i class="bi bi-pie-chart-fill text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
-                        <span class="truncate">Gobernanta Dashboard</span>
-                    </a>
+                    {{-- 1. RECEPCIÓN --}}
+                    @if(in_array($userRole, ['Recepcion', 'Admin']))
+                        <a href="{{ route('recepcion.index') }}" 
+                           class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
+                            <i class="bi bi-bell-fill text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
+                            <span class="truncate">Recepción</span>
+                        </a>
+                    @endif
 
-                    <a href="{{ route('tasks.index') }}" 
-                       class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
-                        <i class="bi bi-list-task text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
-                        <span class="truncate">Gestión de Tareas</span>
-                    </a>
+                    {{-- 2. GOBERNANTA Y TAREAS --}}
+                    @if(in_array($userRole, ['Limpieza', 'Gobernanta', 'Admin']))
+                        <a href="{{ route('gobernanta.index') }}" 
+                           class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
+                            <i class="bi bi-pie-chart-fill text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
+                            <span class="truncate">Gobernanta Dashboard</span>
+                        </a>
 
-                    <a href="{{ route('pda.index') }}" 
-                       class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
-                        <i class="bi bi-phone-fill text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
-                        <span class="truncate">Vista PDA</span>
-                    </a>
+                        <a href="{{ route('tasks.index') }}" 
+                           class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
+                            <i class="bi bi-list-task text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
+                            <span class="truncate">Gestión de Tareas</span>
+                        </a>
+                    @endif
+
+                    {{-- 3. COMERCIAL --}}
+                    @if(in_array($userRole, ['Comercial', 'Admin']))
+                        <a href="{{ route('comercial.index') }}" 
+                           class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
+                            <i class="bi bi-briefcase-fill text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
+                            <span class="truncate">Panel Comercial</span>
+                        </a>
+                    @endif
+
+                    {{-- 4. VISTA PDA --}}
+                    @if(in_array($userRole, ['Limpieza', 'Mantenimiento', 'Admin']))
+                        <a href="{{ route('pda.index') }}" 
+                           class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
+                            <i class="bi bi-phone-fill text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
+                            <span class="truncate">Vista PDA</span>
+                        </a>
+                    @endif
                 </nav>
             </div>
 
@@ -101,19 +124,17 @@
         </aside>
     @endif
 
-    <!-- CONTENEDOR PRINCIPAL DERECHO (Toma el 100% de ancho si no hay sidebar) -->
+    <!-- CONTENEDOR PRINCIPAL DERECHO -->
     <div class="flex-1 flex flex-col min-w-0 min-h-screen">
 
         <!-- 2. CABECERA GLOBAL SUPERIOR (TOP BAR) -->
         <header class="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 @if($hasMultiPageNav)
-                    <!-- Botón Hamburguesa solo si hay menú desplegable -->
                     <button @click="sidebarOpen = true" class="md:hidden p-2 text-slate-600 hover:text-slate-900 focus:outline-none rounded-lg border border-slate-200 bg-slate-50">
                         <i class="bi bi-list text-xl"></i>
                     </button>
                 @else
-                    <!-- Logotipo para roles de vista única (Comercial, Recepción) -->
                     <div class="flex items-center space-x-2">
                         <span class="text-slate-900 text-base font-black tracking-tight">S.A.L.L.</span>
                         <span class="text-[10px] uppercase tracking-widest text-amber-600 font-bold">H.S.</span>
@@ -128,13 +149,12 @@
             
             <div class="flex items-center gap-3 sm:gap-4 text-xs">
                 <div class="flex items-center gap-2">
-                    <span class="font-medium text-slate-700 hidden sm:inline">{{ auth()->user()->name ?? 'Ludmila V.' }}</span>
+                    <span class="font-medium text-slate-700 hidden sm:inline">{{ auth()->user()->name ?? 'Admin' }}</span>
                     <div class="w-8 h-8 rounded-full bg-slate-900 text-amber-400 font-bold flex items-center justify-center text-xs shadow-sm">
-                        {{ strtoupper(substr(auth()->user()->name ?? 'L', 0, 1)) }}
+                        {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
                     </div>
                 </div>
 
-                <!-- Botón de Cerrar Sesión directo en Top Bar para vistas únicas -->
                 <form action="{{ route('logout') }}" method="POST" class="inline-block border-l border-slate-200 pl-3">
                     @csrf
                     <button type="submit" class="p-1.5 sm:px-3 sm:py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-semibold rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer">
