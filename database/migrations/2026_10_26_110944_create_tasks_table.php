@@ -15,7 +15,7 @@ return new class extends Migration
 
             // Relaciones de usuarios (Quién crea vs Quién ejecuta)
             $table->foreignId('creator_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('assigned_to')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
 
             // Contexto de ubicación o evento
             $table->foreignId('room_id')->nullable()->constrained('rooms')->onDelete('set null');
