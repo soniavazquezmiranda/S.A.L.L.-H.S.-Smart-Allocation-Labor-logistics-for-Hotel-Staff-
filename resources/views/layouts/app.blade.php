@@ -38,11 +38,11 @@
 
     @php
         $userRole = auth()->user()->role ?? 'Comercial';
-        // Determinar si el usuario tiene navegación multi-página o es de vista única
+        // Determinar si el usuario tiene navegación multi-página (Admin incluye vista completa de todo el sistema)
         $hasMultiPageNav = in_array($userRole, ['Admin', 'Limpieza', 'Gobernanta']);
     @endphp
 
-    <!-- 1. BARRA LATERAL (Solo se renderiza para roles multi-página como Admin o Gobernanta) -->
+    <!-- 1. BARRA LATERAL (Se renderiza para Admin y roles multi-página) -->
     @if($hasMultiPageNav)
         <div x-show="sidebarOpen" 
              x-transition:enter="transition-opacity ease-linear duration-300"
@@ -69,23 +69,49 @@
                 </div>
 
                 <nav class="space-y-1.5 xl:space-y-2 text-xs font-medium">
-                    <a href="{{ route('gobernanta.index') }}" 
-                       class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
-                        <i class="bi bi-pie-chart-fill text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
-                        <span class="truncate">Gobernanta Dashboard</span>
-                    </a>
+                    
+                    {{-- 1. RECEPCIÓN: Visible para 'Recepcion' o 'Admin' --}}
+                    @if(in_array($userRole, ['Recepcion', 'Admin']))
+                        <a href="{{ route('recepcion.index') }}" 
+                           class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
+                            <i class="bi bi-bell-fill text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
+                            <span class="truncate">Recepción</span>
+                        </a>
+                    @endif
 
-                    <a href="{{ route('tasks.index') }}" 
-                       class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
-                        <i class="bi bi-list-task text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
-                        <span class="truncate">Gestión de Tareas</span>
-                    </a>
+                    {{-- 2. GOBERNANTA Y TAREAS: Visible para 'Limpieza', 'Gobernanta' o 'Admin' --}}
+                    @if(in_array($userRole, ['Limpieza', 'Gobernanta', 'Admin']))
+                        <a href="{{ route('gobernanta.index') }}" 
+                           class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
+                            <i class="bi bi-pie-chart-fill text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
+                            <span class="truncate">Gobernanta Dashboard</span>
+                        </a>
 
-                    <a href="{{ route('pda.index') }}" 
-                       class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
-                        <i class="bi bi-phone-fill text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
-                        <span class="truncate">Vista PDA</span>
-                    </a>
+                        <a href="{{ route('tasks.index') }}" 
+                           class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
+                            <i class="bi bi-list-task text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
+                            <span class="truncate">Gestión de Tareas</span>
+                        </a>
+                    @endif
+
+                    {{-- 3. COMERCIAL: Visible para 'Comercial' o 'Admin' --}}
+                    @if(in_array($userRole, ['Comercial', 'Admin']))
+                        <a href="{{ route('comercial.index') }}" 
+                           class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
+                            <i class="bi bi-briefcase-fill text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
+                            <span class="truncate">Panel Comercial</span>
+                        </a>
+                    @endif
+
+                    {{-- 4. VISTA PDA: Visible para 'Limpieza', 'Mantenimiento' o 'Admin' --}}
+                    @if(in_array($userRole, ['Limpieza', 'Mantenimiento', 'Admin']))
+                        <a href="{{ route('pda.index') }}" 
+                           class="flex items-center space-x-2.5 xl:space-x-3 px-3 xl:px-4 py-2.5 xl:py-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-all group">
+                            <i class="bi bi-phone-fill text-slate-400 group-hover:text-amber-400 transition-colors text-sm"></i>
+                            <span class="truncate">Vista PDA</span>
+                        </a>
+                    @endif
+
                 </nav>
             </div>
 
@@ -128,7 +154,7 @@
             
             <div class="flex items-center gap-3 sm:gap-4 text-xs">
                 <div class="flex items-center gap-2">
-                    <span class="font-medium text-slate-700 hidden sm:inline">{{ auth()->user()->name ?? 'Ludmila V.' }}</span>
+                    <span class="font-medium text-slate-700 hidden sm:inline">{{ auth()->user()->name ?? 'Liudmyla' }}</span>
                     <div class="w-8 h-8 rounded-full bg-slate-900 text-amber-400 font-bold flex items-center justify-center text-xs shadow-sm">
                         {{ strtoupper(substr(auth()->user()->name ?? 'L', 0, 1)) }}
                     </div>

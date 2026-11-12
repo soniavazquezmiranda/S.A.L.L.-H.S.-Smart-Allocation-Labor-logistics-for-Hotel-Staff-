@@ -21,7 +21,7 @@
             </span>
             <span class="text-slate-200 text-[11px] sm:text-xs truncate">Usuario: <strong class="text-white">{{ auth()->user()->name ?? 'Ludmila V.' }}</strong></span>
             
-            <!-- Indicador dinámico de estado en tiempo real (Sustituye al botón Salir repetido) -->
+            <!-- Indicador dinámico de estado en tiempo real -->
             <span class="relative flex h-3 w-3 shrink-0" title="Sistema Online">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.9)]"></span>
@@ -62,7 +62,7 @@
 
     </section>
 
-    <!-- FORMULARIO DE CONTRATACIÓN -->
+    <!-- FORMULARIO DE CONTRATACIÓN Y RESERVA DE EVENTOS -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         <section class="lg:col-span-7 xl:col-span-6 bg-white p-4 sm:p-6 rounded-2xl shadow-md border border-slate-200 flex flex-col gap-4 text-xs">
             <div class="border-b border-slate-200 pb-3">
@@ -70,13 +70,13 @@
                 <h2 class="text-base font-bold text-slate-900">Alta de Reserva de Salón / Evento</h2>
             </div>
 
-            <form action="{{ route('tasks.store') }}" method="POST" class="space-y-4">
+            <form action="{{ route('comercial.store') }}" method="POST" class="space-y-4">
                 @csrf
                 <input type="hidden" name="is_urgent" value="1">
 
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Espacio / Salón Asignado *</label>
-                    <select name="room_id" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl focus:ring-2 focus:ring-amber-500 text-xs">
+                    <label for="room_id" class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Espacio / Salón Asignado *</label>
+                    <select id="room_id" name="room_id" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl focus:ring-2 focus:ring-amber-500 text-xs">
                         <option value="Salón Mirador">Salón Mirador (Capacidad 120 pax · P3)</option>
                         <option value="Salón Noble">Salón Noble (Capacidad 80 pax · PB)</option>
                         <option value="Sala VIP Ejecutiva">Sala VIP Ejecutiva (Capacidad 25 pax · P1)</option>
@@ -84,36 +84,36 @@
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Empresa / Huésped Titular *</label>
-                    <input type="text" name="client" required placeholder="Ej. MedTech Congresos S.L." class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl focus:ring-2 focus:ring-amber-500 text-xs">
+                    <label for="client" class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Empresa / Huésped Titular *</label>
+                    <input type="text" id="client" name="client" required placeholder="Ej. MedTech Congresos S.L." class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl focus:ring-2 focus:ring-amber-500 text-xs">
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Fecha *</label>
-                        <input type="date" name="date" value="2026-10-22" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl text-xs">
+                        <label for="date" class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Fecha *</label>
+                        <input type="date" id="date" name="date" value="2026-10-22" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl text-xs">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Asistentes (Pax) *</label>
-                        <input type="number" name="pax" value="45" min="1" max="200" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl text-xs">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Hora Inicio *</label>
-                        <input type="time" name="start_time" value="16:00" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Hora Fin *</label>
-                        <input type="time" name="end_time" value="19:30" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl text-xs">
+                        <label for="pax" class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Asistentes (Pax) *</label>
+                        <input type="number" id="pax" name="pax" value="45" min="1" max="200" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl text-xs">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Tipo de Montaje *</label>
-                        <select name="setup" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl text-xs">
+                        <label for="start_time" class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Hora Inicio *</label>
+                        <input type="time" id="start_time" name="start_time" value="16:00" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl text-xs">
+                    </div>
+                    <div>
+                        <label for="end_time" class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Hora Fin *</label>
+                        <input type="time" id="end_time" name="end_time" value="19:30" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl text-xs">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label for="setup" class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Tipo de Montaje *</label>
+                        <select id="setup" name="setup" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl text-xs">
                             <option value="Forma en U">Forma en U (Mesas + Sillas)</option>
                             <option value="Teatro">Formato Teatro (Solo Sillas)</option>
                             <option value="Escuela">Formato Escuela (Mesas corridas)</option>
@@ -121,8 +121,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Catering *</label>
-                        <select name="catering" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl text-xs">
+                        <label for="catering" class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Catering *</label>
+                        <select id="catering" name="catering" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-xl text-xs">
                             <option value="Coffee Break Continuo">Coffee Break Continuo</option>
                             <option value="Menú Ejecutivo">Menú Ejecutivo</option>
                             <option value="Buffet Libre Comedor">Buffet Libre Comedor</option>

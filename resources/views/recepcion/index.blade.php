@@ -19,8 +19,7 @@
             <span class="px-2.5 py-1 bg-slate-800 border border-slate-700 text-amber-400 font-semibold rounded-lg uppercase tracking-wider text-[10px] sm:text-xs">
                 Rol: Recepción
             </span>
-            <span class="text-slate-200 text-[11px] sm:text-xs truncate">Usuario: <strong class="text-white">{{ auth()->user()->name ?? 'Sonia R.' }}</strong></span>
-            
+            <span class="text-slate-200 text-[11px] sm:text-xs truncate">Usuario: <strong class="text-white">{{ auth()->user()->name ?? 'Recepción' }}</strong></span>
             <!-- Indicador dinámico de estado en tiempo real (Efecto Radar/Ping) -->
             <span class="relative flex h-3 w-3 shrink-0" title="Sistema Online">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -127,10 +126,14 @@
                             </td>
                             <td class="p-3 sm:p-4 text-right whitespace-nowrap">
                                 @if(strtoupper($room->status) === 'OCUPADA' || strtoupper($room->status) === 'OCCUPIED')
-                                    <!-- Formulario de Check-out directo -->
-                                    <form action="{{ route('recepcion.checkout', $room->id ?? 1) }}" method="POST" class="inline-block">
+                                    <!-- Formulario de Check-out directo enviando ID de habitación -->
+                                    <form action="{{ route('tasks.store') }}" method="POST" class="inline-block">
                                         @csrf
-                                        <button type="submit" class="px-2.5 py-1 sm:px-3 sm:py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-bold rounded-lg shadow-sm transition-all text-[10px] sm:text-[11px] flex items-center gap-1 ml-auto">
+                                        <input type="hidden" name="room_id" value="{{ $room->id }}">
+                                        <input type="hidden" name="title" value="Limpieza por Check-Out (Hab. {{ $room->number ?? $room->id }})">
+                                        <input type="hidden" name="is_urgent" value="1">
+                                        
+                                        <button type="submit" class="px-2.5 py-1 sm:px-3 sm:py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-bold rounded-lg shadow-sm transition-all text-[10px] sm:text-[11px] flex items-center gap-1 ml-auto cursor-pointer">
                                             <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7" />
                                             </svg>

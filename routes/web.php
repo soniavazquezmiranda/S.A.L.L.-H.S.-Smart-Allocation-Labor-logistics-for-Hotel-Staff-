@@ -55,35 +55,27 @@ Route::post('/logout', function (Request $request) {
 })->name('logout');
 
 
-// 3. RUTAS PROTEGIDAS (100% Unificadas en Español para evitar errores)
+// 3. RUTAS PROTEGIDAS (Soporte directo para Admin sin conflictos de middleware)
 Route::middleware(['auth'])->group(function () {
 
-    //  ZONA: RECEPCIÓN
-    Route::middleware(['role:Recepcion'])->group(function () {
-        Route::get('/recepcion', [RecepcionController::class, 'index'])->name('recepcion.index');
-    });
+    // ZONA: RECEPCIÓN
+    Route::get('/recepcion', [RecepcionController::class, 'index'])->name('recepcion.index');
 
-    //  ZONA: GOBERNANTA
-    Route::middleware(['role:Limpieza'])->group(function () {
-        Route::get('/gobernanta', [GobernantaController::class, 'index'])->name('gobernanta.index');
-        Route::get('/gobernanta/tareas', [TaskController::class, 'index'])->name('tasks.index');
-        Route::post('/gobernanta/tareas/crear', [TaskController::class, 'store'])->name('tasks.store');
-    });
+    // ZONA: GOBERNANTA Y TAREAS
+    Route::get('/gobernanta', [GobernantaController::class, 'index'])->name('gobernanta.index');
+    Route::get('/gobernanta/tareas', [TaskController::class, 'index'])->name('tasks.index');
+    Route::post('/gobernanta/tareas/crear', [TaskController::class, 'store'])->name('tasks.store');
 
     // ZONA: COMERCIAL
-    Route::middleware(['role:Comercial'])->group(function () {
-        Route::get('/comercial', [ComercialController::class, 'index'])->name('comercial.index');
-        Route::post('/comercial/reservar', [ComercialController::class, 'store'])->name('comercial.store');
-    });
+    Route::get('/comercial', [ComercialController::class, 'index'])->name('comercial.index');
+    Route::post('/comercial/reservar', [ComercialController::class, 'store'])->name('comercial.store');
 
-    //  ZONA: TERMINAL PDA MÓVIL Y FICHAJES (Nombres en perfecto castellano)
+    // ZONA: TERMINAL PDA MÓVIL Y FICHAJES
     Route::get('/pda', [ShiftController::class, 'index'])->name('pda.index');
-    
-    // Corregido: Mapeado exactamente con el nombre de ruta que pide el HTML de la vista
     Route::post('/pda/fichar', [ShiftController::class, 'clockIn'])->name('pda.fichar');
     Route::post('/pda/salir', [ShiftController::class, 'clockOut'])->name('pda.salir');
     
-    // Acciones operativas sobre los cometidos en la PDA
+    // Acciones operativas sobre tareas
     Route::post('/pda/tarea/{id}/empezar', [TaskController::class, 'start'])->name('tasks.start');
     Route::post('/pda/tarea/{id}/completar', [TaskController::class, 'complete'])->name('tasks.complete');
 });
