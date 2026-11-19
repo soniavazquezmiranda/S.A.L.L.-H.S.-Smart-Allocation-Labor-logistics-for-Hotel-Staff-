@@ -1,54 +1,95 @@
-@extends('layouts.app') <!-- Hereda la cabecera, Tailwind y la barra lateral una sola vez -->
+@extends('layouts.app')
 
 @section('content')
-    <div class="max-w-4xl mx-auto space-y-8 py-12">
-        
-        <!-- BIENVENIDA PRINCIPAL (Estilo Corporativo Premium) -->
-        <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-8 text-white shadow-xl border border-slate-800 text-center relative overflow-hidden">
-            <div class="w-16 h-12 bg-amber-500 rounded-xl flex items-center justify-center shadow-lg text-slate-950 font-black text-2xl mx-auto mb-4">
+<div class="max-w-5xl mx-auto space-y-6">
+
+    <!-- 1. BANNER DE BIENVENIDA ESCULPIDO EN BORGOÑA CON MARCO INTERIOR -->
+    <section class="banner-3d-burgundy rounded-tl-[2.5rem] rounded-br-[2.5rem] rounded-tr-none rounded-bl-none p-3 sm:p-4 text-center text-white">
+        <div class="rounded-tl-[2rem] rounded-br-[2rem] rounded-tr-none rounded-bl-none border border-[#E6BE9A]/25 px-6 py-9 sm:py-12 space-y-4">
+            <div class="w-14 h-14 rounded-tl-2xl rounded-br-2xl rounded-tr-none rounded-bl-none btn-3d-bronze text-white font-serif font-bold text-2xl flex items-center justify-center mx-auto">
                 S
             </div>
-            <h1 class="text-3xl font-black tracking-tight text-white">S.A.L.L. HOTEL SYSTEM</h1>
-            <p class="text-xs text-amber-400 mt-1 uppercase tracking-widest font-bold">Smart Allocation & Labor Logistics</p>
-            
-            <p class="text-sm text-slate-300 max-w-xl mx-auto mt-4 leading-relaxed">
-                Bienvenido a la plataforma intermodular de gestión hotelera en tiempo real. Utiliza el menú lateral para navegar de forma fluida entre los diferentes departamentos operativos del complejo.
+
+            <div class="space-y-1.5">
+                <p class="text-[11px] uppercase tracking-[0.26em] text-[#E6BE9A] font-bold">
+                    Smart Allocation &amp; Labor Logistics
+                </p>
+                <h1 class="font-serif text-3xl sm:text-5xl font-bold text-[#FDF8F4] tracking-tight">
+                    S.A.L.L. <span class="italic font-semibold text-[#E6BE9A]">Hotel System</span>
+                </h1>
+            </div>
+
+            <p class="max-w-2xl mx-auto text-xs sm:text-sm text-[#D9C4C9] leading-relaxed">
+                Plataforma intermodular de gestión hotelera en tiempo real para <strong class="text-[#FDF8F4]">Hotel Grand Central</strong>. 
+                Utiliza la barra de navegación superior para desplazarte entre los departamentos operativos y terminales móviles del complejo.
             </p>
         </div>
+    </section>
 
-        <!-- TARJETAS DE ACCESO RÁPIDO PARA LAS SIMULACIONES EN EL AULA -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-            
-            <!-- Tarjeta Panel de Escritorio -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between gap-4">
-                <div>
-                    <span class="text-indigo-600 font-bold uppercase tracking-wider text-[10px] block mb-1">Entorno de Gestión</span>
-                    <h3 class="text-base font-bold text-slate-900">Terminales de Escritorio</h3>
-                    <p class="text-slate-500 mt-1 leading-relaxed">
-                        Acceso unificado para los perfiles de Dirección (Julio), Recepción (LuzMila), Comercial (Loli) y Gobernanta (Sonia). Control analítico, Kpis y libro operativo de eventos.
-                    </p>
+    <!-- 2. TARJETAS ASIMÉTRICAS DE ACCESO A LOS DOS ENTORNOS OPERATIVOS -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- TARJETA 1: ENTORNO DE GESTIÓN DE ESCRITORIO -->
+        <article class="card-3d-champagne rounded-tl-[2rem] rounded-br-[2rem] rounded-tr-none rounded-bl-none p-6 sm:p-8 border-t-[5px] border-t-[#2B0D16] flex flex-col justify-between gap-6">
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-widest text-[#4A1926]">
+                        Entorno de Gestión
+                    </span>
+                    <span class="w-9 h-9 rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none bg-[#F3ECE6] border border-[#D6C7BC] flex items-center justify-center text-[#2B0D16]">
+                        <i class="bi bi-display text-base"></i>
+                    </span>
                 </div>
-                <a href="{{ route('login') }}" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-center rounded-xl transition-all uppercase tracking-wider">
-                    Abrir Login Premium
-                </a>
+
+                <h2 class="font-serif text-2xl font-bold text-[#2B0D16]">
+                    Terminales de Escritorio
+                </h2>
+
+                <p class="text-xs text-stone-600 leading-relaxed">
+                    Acceso unificado por roles corporativos para <strong>Administración</strong>, <strong>Recepción</strong>, <strong>Gobernanta</strong> y <strong>Departamento Comercial</strong>. Control analítico de ocupación, check-outs en tiempo real, asignación de tareas y libro operativo de eventos.
+                </p>
             </div>
 
-            <!-- Tarjeta Panel Móvil PDA -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between gap-4">
-                <div>
-                    <span class="text-amber-500 font-bold uppercase tracking-wider text-[10px] block mb-1">Entorno de Movilidad</span>
-                    <h3 class="text-base font-bold text-slate-900">Terminal Operativo PDA</h3>
-                    <p class="text-slate-500 mt-1 leading-relaxed">
-                        Interfaz mobile-first adaptada para los teléfonos del staff de restauración (Maître Sergio) y servicios técnicos (Alonso). Gestión de fichajes obligatorios de jornada y alertas acústicas de tareas.
-                    </p>
-                </div>
-                <a href="{{ route('pda.index') }}" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-center rounded-xl transition-all uppercase tracking-wider">
-                    Simular Dispositivo PDA
+            <div>
+                <a href="{{ route('login') }}" 
+                   class="btn-3d-burgundy w-full py-3.5 px-5 text-[#FDF8F4] font-bold rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                    <i class="bi bi-shield-lock text-[#E6BE9A]"></i>
+                    <span>Acceder al Panel de Control</span>
                 </a>
             </div>
+        </article>
 
-        </div>
+        <!-- TARJETA 2: ENTORNO DE MOVILIDAD Y OPERACIONES EN CAMPO (PDA) -->
+        <article class="card-3d-champagne rounded-tl-[2rem] rounded-br-[2rem] rounded-tr-none rounded-bl-none p-6 sm:p-8 border-t-[5px] border-t-[#A66E3E] flex flex-col justify-between gap-6">
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-widest text-[#8C5C32]">
+                        Entorno de Movilidad
+                    </span>
+                    <span class="w-9 h-9 rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none bg-[#F7EFE6] border border-[#DEC7AF] flex items-center justify-center text-[#A66E3E]">
+                        <i class="bi bi-phone text-base"></i>
+                    </span>
+                </div>
 
-    </div>
+                <h2 class="font-serif text-2xl font-bold text-[#2B0D16]">
+                    Terminal Operativo PDA
+                </h2>
+
+                <p class="text-xs text-stone-600 leading-relaxed">
+                    Interfaz mobile-first adaptada para los dispositivos del personal de <strong>Limpieza</strong>, <strong>Restauración (Maître)</strong> y <strong>Mantenimiento</strong>. Gestión de fichajes obligatorios de jornada, escáner QR y alertas urgentes de tareas.
+                </p>
+            </div>
+
+            <div>
+                <a href="{{ route('pda.index') }}" 
+                   class="btn-3d-bronze w-full py-3.5 px-5 text-white font-bold rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                    <i class="bi bi-qr-code-scan"></i>
+                    <span>Abrir Terminal Móvil PDA</span>
+                </a>
+            </div>
+        </article>
+
+    </section>
+
+</div>
 @endsection
-

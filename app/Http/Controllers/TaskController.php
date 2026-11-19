@@ -15,57 +15,73 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tareas = Task::with(['room', 'user'])->orderBy('created_at', 'desc')->get(); 
+        $tareas = Task::with(['room', 'assignee'])->orderBy('created_at', 'desc')->get(); 
         $habitaciones = Room::all();
         $empleados = User::whereIn('role', ['Limpieza', 'Mantenimiento'])->get();
 
-        return view('gobernanta.index', compact('tareas', 'habitaciones', 'empleados'));
+        return view('tasks.index', compact('tareas', 'habitaciones', 'empleados'));
     }
 
     /**
-     * Crea una nueva tarea (Disparador manual o por Check-out)
+     * Crea una nueva tarea (disparador manual o por check-out).
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
+        // Si viene is_urgent sin priority explícito, asigna High o Medium por defecto
+        if (!$request->filled('priority')) {
+            $request->merge([
+                'priority' => $request->boolean('is_urgent') ? 'High' : 'Medium',
+            ]);
+        }
+
+        // Si la descripción viene vacía en el alta rápida, rellena un texto por defecto
+        if (!$request->filled('description')) {
+            $request->merge([
+                'description' => 'Orden operativa asignada desde el panel de tareas.',
+            ]);
+        }
+
+        $validated = $request->validate([
+            'title'       => 'required|string|max:255',
             'description' => 'required|string',
-            'room_id' => 'required|exists:rooms,id',
-            'priority' => 'required|in:Low,Medium,High',
-            'user_id' => 'nullable|exists:users,id'
+            'room_id'     => 'required|exists:rooms,id',
+            'priority'    => 'required|in:Low,Medium,High',
+            'user_id'     => 'nullable|exists:users,id',
         ]);
 
+        // Crea la tarea en estado pendiente y vincula al operario si se seleccionó
         Task::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'room_id' => $request->room_id,
-            'user_id' => $request->user_id,
-            'priority' => $request->priority,
-            'status' => 'Pending',
-            'is_urgent' => $request->priority === 'High' ? 1 : 0
+            'title'       => $validated['title'],
+            'description' => $validated['description'],
+            'room_id'     => $validated['room_id'],
+            'user_id'     => $validated['user_id'] ?? null,
+            'priority'    => $validated['priority'],
+            'status'      => 'Pending',
+            'is_urgent'   => $validated['priority'] === 'High' ? 1 : 0,
         ]);
 
-        // Si la habitación estaba ocupada, pasa a estar en estado de Limpieza (Cleaning)
-        $room = Room::find($request->room_id);
+        // Si la habitación estaba ocupada, pasa a estar en limpieza (Cleaning)
+        $room = Room::find($validated['room_id']);
         if ($room && $room->status === 'Occupied') {
             $room->update(['status' => 'Cleaning']);
         }
 
-        return redirect()->back()->with('success', '¡Tarea creada con éxito!');
+        return redirect()->back()->with('success', '¡Tarea creada con éxito en estado Pendiente!');
     }
 
     /**
-     * El operario inicia la tarea desde la PDA
+     * El operario inicia la tarea desde la PDA.
      */
     public function start($id)
     {
         $tarea = Task::findOrFail($id);
         $tarea->update([
-            'status' => 'In_Progress',
-            'user_id' => Auth::id() // Se autoasigna al empleado que le da al botón
+            'status'      => 'In_Progress',
+            'user_id' => Auth::id(),
+            'accepted_at' => $tarea->accepted_at ?? now(),
         ]);
 
-        return redirect()->back()->with('success', 'Tarea iniciada en tu terminal.');
+        return redirect()->back()->with('success', 'Tarea iniciada: ahora está En Ejecución.');
     }
 
     /**
