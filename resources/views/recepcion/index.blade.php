@@ -1,79 +1,165 @@
-@extends('layouts.app') <!-- Hereda la cabecera, Tailwind y la barra lateral una sola vez -->
+@extends('layouts.app')
 
 @section('content')
-<div class="w-full max-w-7xl mx-auto space-y-4 sm:space-y-6 px-1 sm:px-4">
+<!-- Estilos locales para la variante estética Borgoña / Champagne con geometría asimétrica esculpida en 3D -->
+<style>
+    /* Banner principal en tono Borgoña profundo con bisel iluminado y sombra de elevación */
+    .banner-3d-burgundy {
+        background: radial-gradient(circle at top right, #521B2A 0%, #2B0D16 65%, #17050A 100%);
+        border: 1px solid #6E263A;
+        border-bottom: 5px solid #120408;
+        box-shadow: 
+            0 18px 34px -10px rgba(43, 13, 22, 0.48),
+            0 4px 10px -2px rgba(43, 13, 22, 0.20),
+            inset 0 1px 0 rgba(243, 217, 195, 0.28);
+    }
 
-    <!-- BARRA SUPERIOR (Cabecera Adaptativa de Recepción) -->
-    <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-2xl p-4 sm:p-6 text-white shadow-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div class="flex items-center gap-3 sm:gap-4 min-w-0">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-amber-500 rounded-xl flex items-center justify-center shadow-lg text-slate-950 font-black text-xl sm:text-2xl shrink-0">
-                S
-            </div>
-            <div class="min-w-0 flex-1">
-                <h1 class="text-base sm:text-xl font-bold tracking-tight truncate">HOTEL GRAND CENTRAL — PANEL RECEPCIÓN</h1>
-                <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate">S.A.L.L. H.S. Core Frontdesk · {{ $totalRooms ?? 52 }} Habitaciones</p>
-            </div>
-        </div>
+    /* Tarjeta convexa tono marfil-champagne con relieve 3D pronunciado */
+    .card-3d-champagne {
+        background: linear-gradient(180deg, #FFFFFF 0%, #F9F4EF 100%);
+        border: 1px solid #D8C9BE;
+        border-bottom: 4px solid #BFA99B;
+        box-shadow: 
+            0 12px 26px -6px rgba(43, 13, 22, 0.14),
+            0 3px 8px -2px rgba(43, 13, 22, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.98);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card-3d-champagne:hover {
+        transform: translateY(-2px);
+        box-shadow: 
+            0 16px 30px -6px rgba(43, 13, 22, 0.18),
+            0 4px 10px -2px rgba(43, 13, 22, 0.10),
+            inset 0 1px 0 rgba(255, 255, 255, 1);
+    }
 
-        <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-xs shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800/80">
-            <span class="px-2.5 py-1 bg-slate-800 border border-slate-700 text-amber-400 font-semibold rounded-lg uppercase tracking-wider text-[10px] sm:text-xs">
-                Rol: Recepción
-            </span>
-            <span class="text-slate-200 text-[11px] sm:text-xs truncate">Usuario: <strong class="text-white">{{ auth()->user()->name ?? 'Sonia R.' }}</strong></span>
-            
-            <!-- Indicador dinámico de estado en tiempo real (Efecto Radar/Ping) -->
-            <span class="relative flex h-3 w-3 shrink-0" title="Sistema Online">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.9)]"></span>
-            </span>
+    /* Superficie cóncava (hundida) para filtros y buscador */
+    .recessed-3d-champagne {
+        background-color: #F2EAE3;
+        border: 1px solid #D1C0B4;
+        box-shadow: 
+            inset 0 2px 6px rgba(43, 13, 22, 0.12),
+            0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    /* Botón táctil en Bronce / Champagne intenso con base 3D */
+    .btn-3d-bronze {
+        background: linear-gradient(180deg, #CF9A67 0%, #A66E3E 100%);
+        border: 1px solid #8A582E;
+        border-bottom: 3px solid #5E391A;
+        box-shadow: 
+            0 5px 12px rgba(166, 110, 62, 0.35),
+            inset 0 1px 0 rgba(255, 245, 235, 0.50);
+        transition: all 0.15s ease;
+    }
+    .btn-3d-bronze:hover {
+        background: linear-gradient(180deg, #D9A675 0%, #B37846 100%);
+        transform: translateY(-1px);
+    }
+    .btn-3d-bronze:active {
+        transform: translateY(2px);
+        border-bottom-width: 1px;
+    }
+</style>
+
+<div class="space-y-6">
+
+    <!-- 1. BANNER PRINCIPAL EN BORGOÑA CON CURVATURA ASIMÉTRICA PRONUNCIADA Y MARCO INTERIOR -->
+    <header class="banner-3d-burgundy rounded-tl-[2.25rem] rounded-br-[2.25rem] rounded-tr-none rounded-bl-none p-3 sm:p-4 text-white">
+        <!-- Filete interior dorado-champagne que replica el corte asimétrico -->
+        <div class="rounded-tl-[1.75rem] rounded-br-[1.75rem] rounded-tr-none rounded-bl-none border border-[#E6BE9A]/25 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="min-w-0">
+                <div class="flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-[#E6BE9A] font-bold mb-1.5">
+                    <span>Frontdesk &amp; Operaciones</span>
+                    <span>•</span>
+                    <span>Gran Hotel 5★</span>
+                </div>
+                <h1 class="font-serif text-3xl sm:text-4xl font-bold text-[#FDF8F4] tracking-tight">
+                    Hotel Grand Central <span class="italic font-semibold text-[#E6BE9A]">— Recepción</span>
+                </h1>
+                <p class="text-xs text-[#D9C4C9] mt-1.5">
+                    Control diario de ocupación, salidas y estado de habitaciones ({{ $totalRooms ?? 52 }} unidades)
+                </p>
+            </div>
+
+            <!-- Bloque de operador con cápsula asimétrica rebajada -->
+            <div class="flex items-center gap-3 text-xs bg-[#140509]/70 border border-[#E6BE9A]/30 px-4 py-2.5 rounded-tl-2xl rounded-br-2xl rounded-tr-none rounded-bl-none shadow-inner shrink-0 whitespace-nowrap">
+                <div class="text-left sm:text-right">
+                    <span class="text-[#C7AEB5] block text-[10px] uppercase tracking-wider">Operador en turno</span>
+                    <strong class="text-[#FDF8F4] text-xs">{{ auth()->user()->name ?? 'Recepción' }}</strong>
+                </div>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-tl-lg rounded-br-lg rounded-tr-none rounded-bl-none bg-[#4A1926] border border-[#7A2C41] text-[#F5DEC9] font-semibold text-[11px]">
+                    <span class="w-2 h-2 rounded-full bg-[#E6BE9A] animate-pulse"></span>
+                    Online
+                </span>
+            </div>
         </div>
     </header>
 
-    <!-- MÉTRICAS DE CONEXIÓN CON CONTROLADOR (Grid Adaptativo Responsivo) -->
-    <section class="grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-xs">
-      
-        <!-- Tarjeta 1: Total Habitaciones -->
-        <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between min-w-0">
-            <span class="text-[10px] sm:text-[11px] text-slate-500 uppercase font-bold tracking-wider truncate">Total Habitaciones</span>
-            <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">{{ $totalRooms ?? 52 }}</span>
-            <span class="text-[10px] sm:text-[11px] text-slate-400 border-t border-slate-100 pt-2 mt-2 truncate">Capacidad hotelera</span>
+    <!-- 2. TARJETAS KPI ESCULPIDAS (ESQUINAS 1 Y 3 MUY REDONDEADAS, 2 Y 4 EN ÁNGULO RECTO) -->
+    <section class="grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-4 gap-5 text-xs">
+        
+        <!-- KPI 1: Capacidad total -->
+        <div class="card-3d-champagne p-5 rounded-tl-[1.75rem] rounded-br-[1.75rem] rounded-tr-none rounded-bl-none border-l-[5px] border-l-[#2B0D16] flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] text-stone-600 uppercase font-bold tracking-wider">Total Habitaciones</span>
+                <span class="w-8 h-8 rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none bg-[#F3ECE6] border border-[#D6C7BC] flex items-center justify-center text-[#2B0D16]">
+                    <i class="bi bi-building text-sm"></i>
+                </span>
+            </div>
+            <div class="font-serif text-4xl font-bold text-[#2B0D16] my-2.5">{{ $totalRooms ?? 52 }}</div>
+            <p class="text-[11px] text-stone-500">Capacidad total del complejo</p>
         </div>
 
-        <!-- Tarjeta 2: Hab. Ocupadas -->
-        <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between min-w-0">
-            <span class="text-[10px] sm:text-[11px] text-slate-500 uppercase font-bold tracking-wider truncate">Hab. Ocupadas</span>
-            <span class="text-2xl sm:text-3xl font-extrabold text-indigo-900 mt-2">{{ $occupiedRooms ?? 38 }}</span>
-            <span class="text-[10px] sm:text-[11px] text-slate-400 border-t border-slate-100 pt-2 mt-2 truncate">Ocupación actual</span>
+        <!-- KPI 2: Habitaciones ocupadas -->
+        <div class="card-3d-champagne p-5 rounded-tl-[1.75rem] rounded-br-[1.75rem] rounded-tr-none rounded-bl-none border-l-[5px] border-l-[#632234] flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] text-stone-600 uppercase font-bold tracking-wider">Hab. Ocupadas</span>
+                <span class="w-8 h-8 rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none bg-[#F3ECE6] border border-[#D6C7BC] flex items-center justify-center text-[#632234]">
+                    <i class="bi bi-person-check text-sm"></i>
+                </span>
+            </div>
+            <div class="font-serif text-4xl font-bold text-[#4A1926] my-2.5">{{ $occupiedRooms ?? 38 }}</div>
+            <p class="text-[11px] text-stone-500">Huéspedes alojados actualmente</p>
         </div>
 
-        <!-- Tarjeta 3: Check-outs Pendientes -->
-        <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-4 sm:p-5 rounded-2xl shadow-sm border border-amber-200 flex flex-col justify-between min-w-0">
-            <span class="text-[10px] sm:text-[11px] text-amber-900 uppercase font-bold tracking-wider truncate">Check-outs Pendientes</span>
-            <span class="text-2xl sm:text-3xl font-extrabold text-amber-700 mt-2">{{ $pendingCheckouts ?? 9 }}</span>
-            <span class="text-[10px] sm:text-[11px] text-amber-800 border-t border-amber-200/60 pt-2 mt-2 font-medium truncate">Prioridad jornada hoy</span>
+        <!-- KPI 3: Check-outs pendientes (Destacado en bronce-champagne) -->
+        <div class="card-3d-champagne p-5 rounded-tl-[1.75rem] rounded-br-[1.75rem] rounded-tr-none rounded-bl-none border-l-[5px] border-l-[#A87344] flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] text-[#8C5C32] uppercase font-bold tracking-wider">Check-outs Hoy</span>
+                <span class="w-8 h-8 rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none bg-[#F7EFE6] border border-[#DEC7AF] flex items-center justify-center text-[#A87344]">
+                    <i class="bi bi-door-open text-sm"></i>
+                </span>
+            </div>
+            <div class="font-serif text-4xl font-bold text-[#9E6838] my-2.5">{{ $pendingCheckouts ?? 9 }}</div>
+            <p class="text-[11px] text-[#8C5C32]/85 font-medium">Salidas previstas pendientes</p>
         </div>
 
-        <!-- Tarjeta 4: Habitaciones Sucias -->
-        <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between min-w-0">
-            <span class="text-[10px] sm:text-[11px] text-slate-500 uppercase font-bold tracking-wider truncate">Habitaciones Sucias</span>
-            <span class="text-2xl sm:text-3xl font-extrabold text-rose-600 mt-2">{{ $dirtyRooms ?? 5 }}</span>
-            <span class="text-[10px] sm:text-[11px] text-slate-400 border-t border-slate-100 pt-2 mt-2 truncate">En cola de limpieza PDA</span>
+        <!-- KPI 4: En cola de limpieza -->
+        <div class="card-3d-champagne p-5 rounded-tl-[1.75rem] rounded-br-[1.75rem] rounded-tr-none rounded-bl-none border-l-[5px] border-l-rose-800 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] text-stone-600 uppercase font-bold tracking-wider">Cola de Limpieza</span>
+                <span class="w-8 h-8 rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-800">
+                    <i class="bi bi-stars text-sm"></i>
+                </span>
+            </div>
+            <div class="font-serif text-4xl font-bold text-rose-800 my-2.5">{{ $dirtyRooms ?? 5 }}</div>
+            <p class="text-[11px] text-stone-500">Asignadas a gobernanta / PDA</p>
         </div>
-
     </section>
 
-    <!-- BÚSQUEDA Y FILTROS ADAPTATIVOS -->
-    <section class="bg-white p-3 sm:p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
-        <div class="flex items-center gap-2 sm:gap-3 w-full md:w-auto flex-1 min-w-0">
-            <span class="font-bold text-slate-500 uppercase tracking-wider text-[10px] sm:text-[11px] shrink-0">Buscar:</span>
-            <input type="text" id="filter-search" oninput="applyFilters()" placeholder="Nº Habitación o huésped..." 
-                   class="w-full bg-slate-50 border border-slate-300 px-3 py-1.5 sm:py-2 text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all">
+    <!-- 3. PANEL DE BÚSQUEDA Y FILTROS CON CONTORNO ASIMÉTRICO Y CAMPOS CÓNCAVOS -->
+    <section class="card-3d-champagne p-4 sm:p-5 rounded-tl-2xl rounded-br-2xl rounded-tr-none rounded-bl-none flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-3 flex-1 min-w-0">
+            <i class="bi bi-search text-[#2B0D16] font-bold shrink-0"></i>
+            <input type="text" id="filter-search" oninput="applyFilters()" placeholder="Buscar por número de habitación o nombre del huésped..." 
+                   class="w-full recessed-3d-champagne px-4 py-2.5 text-xs text-stone-800 placeholder-stone-500 rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none focus:outline-none focus:border-[#4A1926] focus:bg-white transition-all">
         </div>
 
-        <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-[11px] justify-between md:justify-end">
-            <div class="flex items-center gap-1.5 flex-1 min-w-[130px] sm:flex-none">
-                <span class="font-bold text-slate-500 uppercase tracking-wider shrink-0">Planta:</span>
-                <select id="filter-floor" onchange="applyFilters()" class="w-full sm:w-auto bg-slate-50 border border-slate-300 px-2 sm:px-3 py-1.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
+        <div class="flex flex-wrap items-center gap-3 text-xs shrink-0">
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-stone-700">Planta:</span>
+                <select id="filter-floor" onchange="applyFilters()" class="recessed-3d-champagne px-3.5 py-2.5 rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none text-stone-800 font-medium focus:outline-none focus:border-[#4A1926]">
                     <option value="all">Todas</option>
                     <option value="1">Planta 1</option>
                     <option value="2">Planta 2</option>
@@ -81,9 +167,9 @@
                 </select>
             </div>
 
-            <div class="flex items-center gap-1.5 flex-1 min-w-[140px] sm:flex-none">
-                <span class="font-bold text-slate-500 uppercase tracking-wider shrink-0">Estado:</span>
-                <select id="filter-status" onchange="applyFilters()" class="w-full sm:w-auto bg-slate-50 border border-slate-300 px-2 sm:px-3 py-1.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-stone-700">Estado:</span>
+                <select id="filter-status" onchange="applyFilters()" class="recessed-3d-champagne px-3.5 py-2.5 rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none text-stone-800 font-medium focus:outline-none focus:border-[#4A1926]">
                     <option value="all">Todos</option>
                     <option value="OCUPADA">Ocupada</option>
                     <option value="SUCIA">Sucia</option>
@@ -93,58 +179,64 @@
         </div>
     </section>
 
-    <!-- TABLA DE HABITACIONES (Scroll interno flexible) -->
-    <section class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden max-w-full">
-        <div class="overflow-x-auto w-full">
+    <!-- 4. TABLA DE HABITACIONES CON CONTORNO ESCULPIDO Y BOTONES 3D ASIMÉTRICOS -->
+    <section class="card-3d-champagne rounded-tl-[2rem] rounded-br-[2rem] rounded-tr-none rounded-bl-none overflow-hidden">
+        <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs min-w-[600px]">
-                <thead class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white uppercase text-[10px] sm:text-[11px] tracking-wider">
+                <thead class="bg-[#2B0D16] text-[#FDF8F4] uppercase text-[11px] tracking-wider border-b-2 border-[#120408]">
                     <tr>
-                        <th class="p-3 sm:p-4 font-bold">Habitación</th>
-                        <th class="p-3 sm:p-4 font-bold">Huésped Titular</th>
-                        <th class="p-3 sm:p-4 font-bold">Régimen</th>
-                        <th class="p-3 sm:p-4 font-bold">Estado Actual</th>
-                        <th class="p-3 sm:p-4 font-bold text-right">Acción de Recepción</th>
+                        <th class="p-4 pl-6 font-bold">Habitación</th>
+                        <th class="p-4 font-bold">Huésped Titular</th>
+                        <th class="p-4 font-bold">Régimen</th>
+                        <th class="p-4 font-bold">Estado Actual</th>
+                        <th class="p-4 pr-6 font-bold text-right">Operación</th>
                     </tr>
                 </thead>
-                <tbody id="rooms-tbody" class="divide-y divide-slate-100 text-xs">
+                <tbody id="rooms-tbody" class="divide-y divide-stone-200/80">
                     @forelse($rooms ?? [] as $room)
-                        <tr class="room-row hover:bg-slate-50 transition-colors" 
-                            data-id="{{ $room->number ?? $room->id }}" 
+                        <tr class="room-row hover:bg-[#F3ECE6]/80 transition-colors" 
+                            data-id="{{ $room->room_number ?? $room->number ?? $room->id }}" 
                             data-guest="{{ strtolower($room->guest_name ?? '---') }}" 
                             data-floor="{{ $room->floor ?? '1' }}" 
                             data-status="{{ strtoupper($room->status) }}">
-                            <td class="p-3 sm:p-4 font-bold text-slate-900 whitespace-nowrap">Hab. {{ $room->number ?? $room->id }} <span class="text-slate-400 font-normal">(P{{ $room->floor ?? '1' }})</span></td>
-                            <td class="p-3 sm:p-4 font-medium text-slate-700 whitespace-nowrap">{{ $room->guest_name ?? '---' }}</td>
-                            <td class="p-3 sm:p-4 text-slate-500 whitespace-nowrap">{{ $room->regime ?? 'Solo Alojamiento' }}</td>
-                            <td class="p-3 sm:p-4 whitespace-nowrap">
+                            <td class="p-4 pl-6 font-bold text-stone-900 whitespace-nowrap">
+                                <span class="inline-block px-2.5 py-0.5 rounded-tl-lg rounded-br-lg rounded-tr-none rounded-bl-none bg-[#F3ECE6] border border-[#D6C7BC] text-[#2B0D16] mr-1.5">
+                                    #{{ $room->room_number ?? $room->number ?? $room->id }}
+                                </span>
+                                <span class="text-stone-500 font-normal">Planta {{ $room->floor ?? '1' }}</span>
+                            </td>
+                            <td class="p-4 font-semibold text-stone-800 whitespace-nowrap">{{ $room->guest_name ?? '---' }}</td>
+                            <td class="p-4 text-stone-600 whitespace-nowrap">{{ $room->regime ?? 'Solo Alojamiento' }}</td>
+                            <td class="p-4 whitespace-nowrap">
                                 @if(strtoupper($room->status) === 'OCUPADA' || strtoupper($room->status) === 'OCCUPIED')
-                                    <span class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold text-[10px]">OCUPADA</span>
+                                    <span class="px-3 py-1 rounded-tl-lg rounded-br-lg rounded-tr-none rounded-bl-none bg-[#F3ECE6] border border-[#D6C7BC] text-[#4A1926] font-bold text-[10px]">OCUPADA</span>
                                 @elseif(strtoupper($room->status) === 'SUCIA' || strtoupper($room->status) === 'CLEANING')
-                                    <span class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 font-bold text-[10px]">SUCIA</span>
+                                    <span class="px-3 py-1 rounded-tl-lg rounded-br-lg rounded-tr-none rounded-bl-none bg-rose-100 border border-rose-300 text-rose-900 font-bold text-[10px]">SUCIA</span>
                                 @else
-                                    <span class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold text-[10px]">LISTA</span>
+                                    <span class="px-3 py-1 rounded-tl-lg rounded-br-lg rounded-tr-none rounded-bl-none bg-[#F7EFE6] border border-[#DEC7AF] text-[#7D512B] font-bold text-[10px]">DISPONIBLE</span>
                                 @endif
                             </td>
-                            <td class="p-3 sm:p-4 text-right whitespace-nowrap">
+                            <td class="p-4 pr-6 text-right whitespace-nowrap">
                                 @if(strtoupper($room->status) === 'OCUPADA' || strtoupper($room->status) === 'OCCUPIED')
-                                    <!-- Formulario de Check-out directo -->
-                                    <form action="{{ route('recepcion.checkout', $room->id ?? 1) }}" method="POST" class="inline-block">
+                                    <form action="{{ route('tasks.store') }}" method="POST" class="inline-block">
                                         @csrf
-                                        <button type="submit" class="px-2.5 py-1 sm:px-3 sm:py-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-bold rounded-lg shadow-sm transition-all text-[10px] sm:text-[11px] flex items-center gap-1 ml-auto">
-                                            <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7" />
-                                            </svg>
-                                            <span>CHECK-OUT</span>
+                                        <input type="hidden" name="room_id" value="{{ $room->id }}">
+                                        <input type="hidden" name="title" value="Limpieza por Check-Out (Hab. {{ $room->room_number ?? $room->number ?? $room->id }})">
+                                        <input type="hidden" name="is_urgent" value="1">
+                                        
+                                        <button type="submit" class="btn-3d-bronze px-4 py-1.5 text-white font-bold rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none text-[11px] inline-flex items-center gap-1.5 cursor-pointer">
+                                            <i class="bi bi-box-arrow-right"></i>
+                                            <span>Registrar Check-Out</span>
                                         </button>
                                     </form>
                                 @else
-                                    <span class="text-slate-400 italic text-[11px]">Sin acciones</span>
+                                    <span class="text-stone-400 italic text-[11px]">Sin acciones pendientes</span>
                                 @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="p-6 text-center text-slate-400">No hay habitaciones registradas.</td>
+                            <td colspan="5" class="p-8 text-center text-stone-500">No hay habitaciones registradas.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -154,24 +246,24 @@
 
 </div>
 
-<!-- SCRIPT DE FILTRADO DINÁMICO EN TIEMPO REAL -->
+<!-- LÓGICA JAVASCRIPT EN CLIENTE PARA FILTRADO INSTANTÁNEO -->
 <script>
+    /**
+     * Filtra las filas de la tabla de habitaciones combinando búsqueda textual,
+     * número de planta y estado operativo actual.
+     */
     function applyFilters() {
-        let search = document.getElementById('filter-search').value.toLowerCase();
-        let floor = document.getElementById('filter-floor').value;
-        let status = document.getElementById('filter-status').value;
-        let rows = document.querySelectorAll('.room-row');
+        let busqueda = document.getElementById('filter-search').value.toLowerCase();
+        let planta = document.getElementById('filter-floor').value;
+        let estado = document.getElementById('filter-status').value;
+        let filas = document.querySelectorAll('.room-row');
 
-        rows.forEach(row => {
-            let matchSearch = row.dataset.id.includes(search) || row.dataset.guest.includes(search);
-            let matchFloor = floor === 'all' || row.dataset.floor === floor;
-            let matchStatus = status === 'all' || row.dataset.status === status || (status === 'SUCIA' && row.dataset.status === 'CLEANING') || (status === 'OCUPADA' && row.dataset.status === 'OCCUPIED');
+        filas.forEach(fila => {
+            let coincideBusqueda = fila.dataset.id.toLowerCase().includes(busqueda) || fila.dataset.guest.includes(busqueda);
+            let coincidePlanta = planta === 'all' || fila.dataset.floor === planta;
+            let coincideEstado = estado === 'all' || fila.dataset.status === estado || (estado === 'SUCIA' && fila.dataset.status === 'CLEANING') || (estado === 'OCUPADA' && fila.dataset.status === 'OCCUPIED');
 
-            if (matchSearch && matchFloor && matchStatus) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+            fila.style.display = (coincideBusqueda && coincidePlanta && coincideEstado) ? '' : 'none';
         });
     }
 </script>
