@@ -15,7 +15,7 @@ class RoleMiddleware
             return redirect('/login');
         }
 
-        // Valida contra tus roles en español del Seeder
+        // Validacion de roles generados por el Seeder
         if (Auth::user()->role !== $role) {
             abort(403, 'Acceso denegado: Tu cuenta no tiene permisos para este panel.');
         }

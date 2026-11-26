@@ -16,6 +16,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'department_id',
     ];
 
     protected $hidden = [
@@ -28,11 +29,6 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    // Relación: Un usuario (empleado) tiene muchas tareas asignadas
-    public function tasks()
-    {
-        return $this->hasMany(Task::class, 'user_id');
-    }
 
     // Relación: Un usuario tiene varios turnos/fichajes
     public function shifts()
