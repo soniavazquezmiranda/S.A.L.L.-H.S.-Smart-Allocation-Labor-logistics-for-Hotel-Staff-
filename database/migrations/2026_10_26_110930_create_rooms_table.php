@@ -14,7 +14,7 @@ return new class extends Migration
         $table->integer('floor')->default(0);    // Planta (0 para planta baja/patio)
         
         // ENUM ampliado con todos vuestros espacios reales:
-        $table->enum('type', ['Single', 'Standard Double', 'Executive Suite', 'Lounge', 'Restaurant', 'Courtyard']); 
+        $table->enum('type', ['Single', 'Standard Double', 'Executive Suite','Junior Suite','Lounge', 'Restaurant', 'Courtyard']); //Le he añadido una Junior Suite
         
         // ENUM de estados:
         $table->enum('status', ['Available', 'Occupied', 'Cleaning', 'Maintenance'])->default('Available');

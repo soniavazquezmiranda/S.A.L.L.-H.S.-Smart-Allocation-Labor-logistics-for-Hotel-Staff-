@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo; // [AÑADIDO] Importación necesaria para la relación con Department
 
 class User extends Authenticatable
 {
@@ -16,7 +17,11 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+<<<<<<< Updated upstream
         'department_id',
+=======
+        'department_id', // [AÑADIDO] Permite asignar y guardar el departamento al que pertenece el empleado
+>>>>>>> Stashed changes
     ];
 
     protected $hidden = [
@@ -36,9 +41,13 @@ class User extends Authenticatable
         return $this->hasMany(Shift::class, 'user_id');
     }
 
+    // [AÑADIDO] Relación: Un usuario pertenece a un departamento (permite filtrar fichajes por área y mostrarlo en Admin)
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
 
-
-/**
+    /**
      * Tareas creadas por este usuario (Recepción, Gobernanta, Comercial).
      */
     public function createdTasks(): HasMany
@@ -53,6 +62,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Task::class, 'assigned_to');
     }
-
-
 }
