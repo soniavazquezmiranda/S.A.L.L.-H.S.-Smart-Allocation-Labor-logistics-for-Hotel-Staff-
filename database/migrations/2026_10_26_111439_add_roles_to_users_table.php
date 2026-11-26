@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             if (!Schema::hasColumn('users', 'role')) {
-                $table->string('role')->default('Trabajador');
+                $table->enum('role', ['Management', 'Reception', 'Housekeeping', 'Maintenance', 'Restaurant'])->default('Housekeeping');
             }
             if (!Schema::hasColumn('users', 'department_id')) {
                 $table->foreignId('department_id')->nullable()->constrained('departments')->onDelete('set null');
@@ -21,13 +21,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            if (Schema::hasColumn('users', 'department_id')) {
-                $table->dropForeign(['department_id']);
-                $table->dropColumn('department_id');
-            }
-            if (Schema::hasColumn('users', 'role')) {
-                $table->dropColumn('role');
-            }
+            $table->dropForeign(['department_id']);
+            $table->dropColumn(['role', 'department_id']);
         });
     }
 };

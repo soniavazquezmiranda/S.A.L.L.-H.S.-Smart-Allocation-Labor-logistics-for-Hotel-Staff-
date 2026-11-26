@@ -15,27 +15,13 @@ class RoleMiddleware
             return redirect('/login');
         }
 
-<<<<<<< Updated upstream
-        // 1. Si es Admin, entra SIEMPRE sin mirar nada más
-=======
         // [AÑADIDO] El Administrador tiene acceso total a todos los paneles del hotel
->>>>>>> Stashed changes
         if (Auth::user()->role === 'Admin') {
             return $next($request);
         }
 
-<<<<<<< Updated upstream
-        // 2. Comprobamos el resto de roles permitidos en la ruta
-        $allowedRoles = [];
-        foreach ($roles as $role) {
-            $allowedRoles = array_merge($allowedRoles, explode(',', $role));
-        }
-
-        if (!in_array(Auth::user()->role, $allowedRoles)) {
-=======
         // [MODIFICADO] Permite validar listas de roles (ej: role:Recepcion,Recepcion_Jefe,Admin)
         if (!in_array(Auth::user()->role, $roles)) {
->>>>>>> Stashed changes
             abort(403, 'Acceso denegado: Tu cuenta no tiene permisos para este panel.');
         }
 

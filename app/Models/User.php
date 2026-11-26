@@ -17,11 +17,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-<<<<<<< Updated upstream
-        'department_id',
-=======
         'department_id', // [AÑADIDO] Permite asignar y guardar el departamento al que pertenece el empleado
->>>>>>> Stashed changes
     ];
 
     protected $hidden = [
@@ -34,6 +30,11 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    // Relación: Un usuario (empleado) tiene muchas tareas asignadas
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'user_id');
+    }
 
     // Relación: Un usuario tiene varios turnos/fichajes
     public function shifts()

@@ -10,13 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ShiftController extends Controller
 {
-<<<<<<< Updated upstream
-        public function index()
-        {
-            return view('pda.index');
-        }
-   
-=======
     /**
      * Muestra la pantalla principal de la PDA con turnos y tareas asignadas
      */
@@ -106,5 +99,4 @@ class ShiftController extends Controller
 
         return redirect()->back()->with('success', 'Salida registrada. ¡Jornada finalizada!');
     }
->>>>>>> Stashed changes
 }

@@ -6,9 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model
 {
-
-    protected $fillable = ['room_number', 'floor', 'type', 'status'];
-
     public function events()
     {
         return $this->hasMany(Event::class);

@@ -1,92 +1,54 @@
-@extends('layouts.app')
+@extends('layouts.app') <!-- Hereda la cabecera, Tailwind y la barra lateral una sola vez -->
 
 @section('content')
-    <div class="max-w-5xl mx-auto space-y-6 py-4 sm:py-8">
+    <div class="max-w-4xl mx-auto space-y-8 py-12">
         
-        <!-- 1. BANNER PRINCIPAL EN BORGOÑA PROFUNDO -->
-        <div class="banner-3d-burgundy rounded-tl-[2.25rem] rounded-br-[2.25rem] rounded-tr-none rounded-bl-none p-8 sm:p-10 text-white text-center relative overflow-hidden">
-            <div class="w-14 h-14 rounded-tl-2xl rounded-br-2xl rounded-tr-none rounded-bl-none btn-3d-bronze text-white font-serif font-bold text-3xl flex items-center justify-center mx-auto mb-4">
+        <!-- BIENVENIDA PRINCIPAL (Estilo Corporativo Premium) -->
+        <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-8 text-white shadow-xl border border-slate-800 text-center relative overflow-hidden">
+            <div class="w-16 h-12 bg-amber-500 rounded-xl flex items-center justify-center shadow-lg text-slate-950 font-black text-2xl mx-auto mb-4">
                 S
             </div>
+            <h1 class="text-3xl font-black tracking-tight text-white">S.A.L.L. HOTEL SYSTEM</h1>
+            <p class="text-xs text-amber-400 mt-1 uppercase tracking-widest font-bold">Smart Allocation & Labor Logistics</p>
             
-            <h1 class="font-serif text-3xl sm:text-4xl font-bold text-[#FDF8F4] tracking-tight">
-                S.A.L.L. HOTEL SYSTEM
-            </h1>
-            <p class="text-[11px] uppercase tracking-[0.26em] text-[#E6BE9A] font-bold mt-1.5">
-                Smart Allocation &amp; Labor Logistics
-            </p>
-            
-            <p class="text-xs sm:text-sm text-[#D9C4C9] max-w-2xl mx-auto mt-4 leading-relaxed">
-                Plataforma operativa unificada para la coordinación en tiempo real entre Recepción, Gobernanta, Dirección Comercial y los terminales móviles PDA del personal de servicio.
+            <p class="text-sm text-slate-300 max-w-xl mx-auto mt-4 leading-relaxed">
+                Bienvenido a la plataforma intermodular de gestión hotelera en tiempo real. Utiliza el menú lateral para navegar de forma fluida entre los diferentes departamentos operativos del complejo.
             </p>
         </div>
 
-        <!-- 2. TARJETAS DE ACCESO POR ENTORNO OPERATIVO -->
+        <!-- TARJETAS DE ACCESO RÁPIDO PARA LAS SIMULACIONES EN EL AULA -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
             
-            <!-- Tarjeta 1: Terminales de Gestión (Escritorio) -->
-            <div class="card-3d-champagne rounded-tl-[1.75rem] rounded-br-[1.75rem] rounded-tr-none rounded-bl-none p-6 sm:p-7 flex flex-col justify-between gap-5">
-                <div class="space-y-2">
-                    <span class="inline-block text-[10px] uppercase tracking-[0.2em] font-bold text-[#632234]">
-                        Entorno de Gestión
-                    </span>
-                    <h2 class="font-serif text-2xl font-bold text-[#2B0D16]">
-                        Terminales de Escritorio
-                    </h2>
-                    <p class="text-stone-600 leading-relaxed">
-                        Acceso departamental para <strong>Administración</strong>, <strong>Recepción</strong>, <strong>Gobernanta</strong> y <strong>Comercial</strong>. Control de habitaciones, planificación de eventos y asignación de tareas.
+            <!-- Tarjeta Panel de Escritorio -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between gap-4">
+                <div>
+                    <span class="text-indigo-600 font-bold uppercase tracking-wider text-[10px] block mb-1">Entorno de Gestión</span>
+                    <h3 class="text-base font-bold text-slate-900">Terminales de Escritorio</h3>
+                    <p class="text-slate-500 mt-1 leading-relaxed">
+                        Acceso unificado para los perfiles de Dirección (Julio), Recepción (LuzMila), Comercial (Loli) y Gobernanta (Sonia). Control analítico, Kpis y libro operativo de eventos.
                     </p>
                 </div>
-
-                @auth
-                    @php
-                        $dashboardRoute = match(auth()->user()->role) {
-                            'Admin', 'Recepcion' => route('recepcion.index'),
-                            'Gobernanta'         => route('gobernanta.index'),
-                            'Comercial'          => route('comercial.index'),
-                            default              => route('pda.index'),
-                        };
-                    @endphp
-                    <a href="{{ $dashboardRoute }}" class="btn-3d-burgundy w-full py-3 px-4 text-[#FDF8F4] font-bold text-center rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none uppercase tracking-wider flex items-center justify-center gap-2">
-                        <i class="bi bi-speedometer2"></i>
-                        <span>Ir a mi Panel ({{ auth()->user()->role }})</span>
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" class="btn-3d-burgundy w-full py-3 px-4 text-[#FDF8F4] font-bold text-center rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none uppercase tracking-wider flex items-center justify-center gap-2">
-                        <i class="bi bi-box-arrow-in-right"></i>
-                        <span>Iniciar Sesión Corporativa</span>
-                    </a>
-                @endauth
+                <a href="{{ route('login') }}" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-center rounded-xl transition-all uppercase tracking-wider">
+                    Abrir Login Premium
+                </a>
             </div>
 
-            <!-- Tarjeta 2: Terminal Operativo PDA (Movilidad) -->
-            <div class="card-3d-champagne rounded-tl-[1.75rem] rounded-br-[1.75rem] rounded-tr-none rounded-bl-none p-6 sm:p-7 flex flex-col justify-between gap-5">
-                <div class="space-y-2">
-                    <span class="inline-block text-[10px] uppercase tracking-[0.2em] font-bold text-[#A66E3E]">
-                        Entorno de Movilidad
-                    </span>
-                    <h2 class="font-serif text-2xl font-bold text-[#2B0D16]">
-                        Terminal Operativo PDA
-                    </h2>
-                    <p class="text-stone-600 leading-relaxed">
-                        Interfaz adaptada para los dispositivos móviles del personal operativo (rol <strong>Trabajador</strong>: limpieza, mantenimiento y restauración). Fichaje de jornada y gestión directa de cometidos asignados.
+            <!-- Tarjeta Panel Móvil PDA -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between gap-4">
+                <div>
+                    <span class="text-amber-500 font-bold uppercase tracking-wider text-[10px] block mb-1">Entorno de Movilidad</span>
+                    <h3 class="text-base font-bold text-slate-900">Terminal Operativo PDA</h3>
+                    <p class="text-slate-500 mt-1 leading-relaxed">
+                        Interfaz mobile-first adaptada para los teléfonos del staff de restauración (Maître Sergio) y servicios técnicos (Alonso). Gestión de fichajes obligatorios de jornada y alertas acústicas de tareas.
                     </p>
                 </div>
-
-                @if(auth()->check() && in_array(auth()->user()->role, ['Trabajador', 'Admin']))
-                    <a href="{{ route('pda.index') }}" class="btn-3d-bronze w-full py-3 px-4 text-white font-bold text-center rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none uppercase tracking-wider flex items-center justify-center gap-2">
-                        <i class="bi bi-phone"></i>
-                        <span>Abrir Terminal PDA</span>
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" class="btn-3d-bronze w-full py-3 px-4 text-white font-bold text-center rounded-tl-xl rounded-br-xl rounded-tr-none rounded-bl-none uppercase tracking-wider flex items-center justify-center gap-2">
-                        <i class="bi bi-phone"></i>
-                        <span>Acceso Terminal PDA</span>
-                    </a>
-                @endif
+                <a href="{{ route('pda.index') }}" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-center rounded-xl transition-all uppercase tracking-wider">
+                    Simular Dispositivo PDA
+                </a>
             </div>
 
         </div>
 
     </div>
 @endsection
+

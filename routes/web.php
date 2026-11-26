@@ -10,27 +10,14 @@ use App\Http\Controllers\ComercialController;
 use App\Http\Controllers\GobernantaController;
 use App\Http\Controllers\AdminController; // [AÑADIDO] Controlador del Panel Maestro de Administración
 
+// 1. RUTA DE BIENVENIDA
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Función auxiliar de redirección según rol
-$redirectByRole = function ($role) {
-    return match($role) {
-        'Admin', 'Recepcion' => '/recepcion',
-        'Gobernanta'         => '/gobernanta',
-        'Comercial'          => '/comercial',
-        'Trabajador'         => '/pda',
-        default              => '/',
-    };
-};
-
-// AUTENTICACIÓN
-Route::get('/login', function () use ($redirectByRole) {
+// 2. AUTENTICACIÓN / LOGIN (Público)
+Route::get('/login', function () {
     if (Auth::check()) {
-<<<<<<< Updated upstream
-        return redirect()->to($redirectByRole(Auth::user()->role));
-=======
         return redirect()->to(match(Auth::user()->role) {
             'Admin' => '/admin', // [AÑADIDO] Redirección directa del Administrador a su panel
             'Gobernanta' => '/gobernanta', // [AÑADIDO] Redirección directa de la Gobernanta
@@ -39,12 +26,11 @@ Route::get('/login', function () use ($redirectByRole) {
             'Limpieza', 'Mantenimiento', 'Restaurante_Jefe' => '/pda', // [MODIFICADO] Incluye Jefatura de Restaurante
             default => '/',
         });
->>>>>>> Stashed changes
     }
     return view('auth.login');
 })->name('login');
 
-Route::post('/login', function (Request $request) use ($redirectByRole) {
+Route::post('/login', function (Request $request) {
     $credentials = $request->validate([
         'email' => 'required|email',
         'password' => 'required',
@@ -52,9 +38,6 @@ Route::post('/login', function (Request $request) use ($redirectByRole) {
 
     if (Auth::attempt($credentials)) {
         $request->session()->regenerate();
-<<<<<<< Updated upstream
-        return redirect()->to($redirectByRole(Auth::user()->role));
-=======
         
         return redirect()->to(match(Auth::user()->role) {
             'Admin' => '/admin', // [AÑADIDO] Acceso directo al Panel Administrador
@@ -64,7 +47,6 @@ Route::post('/login', function (Request $request) use ($redirectByRole) {
             'Limpieza', 'Mantenimiento', 'Restaurante_Jefe' => '/pda', // [MODIFICADO] Incluye Jefatura de Restaurante
             default => '/',
         });
->>>>>>> Stashed changes
     }
 
     return back()->withErrors(['email' => 'Las credenciales no coinciden con nuestros registros.']);
@@ -77,16 +59,6 @@ Route::post('/logout', function (Request $request) {
     return redirect('/login');
 })->name('logout');
 
-<<<<<<< Updated upstream
-// RUTAS PROTEGIDAS POR ROL (Admin entra en todas gracias a RoleMiddleware)
-Route::middleware(['auth'])->group(function () {
-
-    Route::middleware(['role:Recepcion,Admin'])->group(function () {
-        Route::get('/recepcion', [RecepcionController::class, 'index'])->name('recepcion.index');
-    });
-
-    Route::middleware(['role:Gobernanta,Admin'])->group(function () {
-=======
 
 // 3. RUTAS PROTEGIDAS (100% Unificadas en Español)
 Route::middleware(['auth'])->group(function () {
@@ -105,17 +77,12 @@ Route::middleware(['auth'])->group(function () {
 
     // ZONA: GOBERNANTA
     Route::middleware(['role:Gobernanta,Admin'])->group(function () { // [MODIFICADO] Cuadro de habitaciones exclusivo para Gobernanta y Admin
->>>>>>> Stashed changes
         Route::get('/gobernanta', [GobernantaController::class, 'index'])->name('gobernanta.index');
     });
 
     // GESTIÓN Y ASIGNACIÓN DE TAREAS
     Route::middleware(['role:Gobernanta,Recepcion_Jefe,Restaurante_Jefe,Mantenimiento,Admin'])->group(function () { // [MODIFICADO] Jefes de área y Admin
         Route::get('/gobernanta/tareas', [TaskController::class, 'index'])->name('tasks.index');
-<<<<<<< Updated upstream
-    });
-
-=======
     });
 
     // CREACIÓN DE TAREAS
@@ -124,17 +91,11 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // ZONA: COMERCIAL
->>>>>>> Stashed changes
     Route::middleware(['role:Comercial,Admin'])->group(function () {
         Route::get('/comercial', [ComercialController::class, 'index'])->name('comercial.index');
+        Route::post('/comercial/reservar', [ComercialController::class, 'store'])->name('comercial.store');
     });
 
-<<<<<<< Updated upstream
-    Route::middleware(['role:Trabajador,Admin'])->group(function () {
-        Route::get('/pda', [ShiftController::class, 'index'])->name('pda.index');
-    });
-});
-=======
     // ZONA: TERMINAL PDA MÓVIL Y FICHAJES (Nombres en perfecto castellano)
     Route::get('/pda', [ShiftController::class, 'index'])->name('pda.index');
     
@@ -146,4 +107,3 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pda/tarea/{id}/empezar', [TaskController::class, 'start'])->name('tasks.start');
     Route::post('/pda/tarea/{id}/completar', [TaskController::class, 'complete'])->name('tasks.complete');
 });
->>>>>>> Stashed changes

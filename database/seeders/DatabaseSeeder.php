@@ -7,28 +7,19 @@ use App\Models\User;
 use App\Models\Department;
 use App\Models\Room;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        Schema::disableForeignKeyConstraints();
+        // Limpieza automática previa para evitar errores de duplicados
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Room::truncate();
         User::truncate();
         Department::truncate();
-        Schema::enableForeignKeyConstraints();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-<<<<<<< Updated upstream
-        // 1. Departamentos
-        $managementDept  = Department::create(['name' => 'Management', 'description' => 'Dirección general y administración.']);
-        $receptionDept   = Department::create(['name' => 'Reception', 'description' => 'Atención al cliente y reservas.']);
-        $housekeepingDept = Department::create(['name' => 'Housekeeping', 'description' => 'Limpieza de habitaciones y salones.']);
-        $maintenanceDept = Department::create(['name' => 'Maintenance', 'description' => 'Reparación de averías e infraestructura.']);
-        $restaurantDept  = Department::create(['name' => 'Restaurant', 'description' => 'Personal de buffet, comedores y eventos.']);
-
-        // 2. Usuarios de prueba (Contraseña: 12345678)
-=======
         // 1. CREAR LOS DEPARTAMENTOS DEL HOTEL
         $managementDept   = Department::create(['name' => 'Management', 'description' => 'Dirección general y área comercial.']);
         $receptionDept    = Department::create(['name' => 'Reception', 'description' => 'Atención al cliente, check-in y check-out.']);
@@ -43,7 +34,6 @@ class DatabaseSeeder extends Seeder
         // =========================================================================
 
         // DIRECCIÓN GENERAL (Acceso total a todo el hotel y auditoría de fichajes)
->>>>>>> Stashed changes
         User::create([
             'name' => 'Administrador General',
             'email' => 'admin@sall.com',
@@ -72,10 +62,6 @@ class DatabaseSeeder extends Seeder
         // RECEPCIÓN
         // [AÑADIDO] Jefatura de Recepción para controlar turnos y asignar tareas
         User::create([
-<<<<<<< Updated upstream
-            'name' => 'Gobernanta', 'email' => 'gobernanta@sall.com', 'password' => Hash::make('12345678'),
-            'role' => 'Gobernanta', 'department_id' => $housekeepingDept->id
-=======
             'name' => 'Jefe de Recepción',
             'email' => 'jeferecepcion@sall.com',
             'password' => $pass,
@@ -117,7 +103,6 @@ class DatabaseSeeder extends Seeder
             'password' => $pass,
             'role' => 'Limpieza',
             'department_id' => $housekeepingDept->id
->>>>>>> Stashed changes
         ]);
 
         // [AÑADIDO] 6 camareras de piso (2 por planta) + 1 encargada de Zonas Nobles y Exterior
@@ -155,20 +140,6 @@ class DatabaseSeeder extends Seeder
             'department_id' => $restaurantDept->id
         ]);
 
-<<<<<<< Updated upstream
-        // Trabajadores operativos (Solo acceso a PDA)
-        User::create([
-            'name' => 'Trabajador Mantenimiento', 'email' => 'trabajador@sall.com', 'password' => Hash::make('12345678'),
-            'role' => 'Trabajador', 'department_id' => $maintenanceDept->id
-        ]);
-
-        User::create([
-            'name' => 'Maître Sergio', 'email' => 'maitre@sall.com', 'password' => Hash::make('12345678'),
-            'role' => 'Trabajador', 'department_id' => $restaurantDept->id
-        ]);
-
-        // 3. Habitaciones y espacios base
-=======
         // [AÑADIDO] 6 camareros vinculados al departamento de Restaurante
         $camareros = ['Juan', 'Marcos', 'Sofía', 'Alberto', 'Nuria', 'Diego'];
         foreach ($camareros as $i => $nombre) {
@@ -213,7 +184,6 @@ class DatabaseSeeder extends Seeder
         // =========================================================================
         // 3. CREAR HABITACIONES (3 PLANTAS), SALONES, RESTAURANTE Y PATIO CENTRAL
         // =========================================================================
->>>>>>> Stashed changes
         Room::create(['room_number' => '101', 'floor' => 1, 'type' => 'Single', 'status' => 'Available']);
         Room::create(['room_number' => '102', 'floor' => 1, 'type' => 'Executive Suite', 'status' => 'Available']);
         Room::create(['room_number' => '201', 'floor' => 2, 'type' => 'Standard Double', 'status' => 'Cleaning']);
