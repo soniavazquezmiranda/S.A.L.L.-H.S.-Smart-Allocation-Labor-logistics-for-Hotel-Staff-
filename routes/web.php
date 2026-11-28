@@ -73,6 +73,9 @@ Route::middleware(['auth'])->group(function () {
     // ZONA: RECEPCIÓN
     Route::middleware(['role:Recepcion,Recepcion_Jefe,Admin'])->group(function () { // [MODIFICADO] Añadido Recepcion_Jefe
         Route::get('/recepcion', [RecepcionController::class, 'index'])->name('recepcion.index');
+        Route::post('/recepcion/checkin/{room}', [RecepcionController::class, 'checkIn'])->name('recepcion.checkin');
+        Route::post('/recepcion/checkout/{room}', [RecepcionController::class, 'checkOut'])->name('recepcion.checkout');
+
     });
 
     // ZONA: GOBERNANTA

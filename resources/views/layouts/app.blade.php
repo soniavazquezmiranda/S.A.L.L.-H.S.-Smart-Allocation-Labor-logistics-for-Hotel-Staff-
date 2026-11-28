@@ -35,7 +35,6 @@
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
 </head>
 
-
 <body class="h-full flex text-slate-800 font-sans antialiased overflow-x-hidden" x-data="{ sidebarOpen: false }">
 
     @php
@@ -137,3 +136,40 @@
             </div>
         </aside>
     @endif
+
+    <!-- CONTENEDOR PRINCIPAL DERECHO -->
+    <div class="flex-1 flex flex-col min-w-0 min-h-screen">
+
+        <!-- 2. CABECERA GLOBAL SUPERIOR (TOP BAR) -->
+        <header class="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                @if($hasMultiPageNav)
+                    <button @click="sidebarOpen = true" class="md:hidden p-2 text-slate-600 hover:text-slate-900 focus:outline-none rounded-lg border border-slate-200 bg-slate-50">
+                        <i class="bi bi-list text-xl"></i>
+                    </button>
+                @else
+                    <div class="flex items-center space-x-2">
+                        <span class="text-slate-900 text-base font-black tracking-tight">S.A.L.L.</span>
+                        <span class="text-[10px] uppercase tracking-widest text-amber-600 font-bold">H.S.</span>
+                    </div>
+                @endif
+
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400 hidden sm:inline border-l border-slate-200 pl-3">Módulo Activo:</span>
+                <span class="px-2.5 py-1 bg-amber-100 text-amber-900 rounded-lg text-xs font-bold">
+                    {{ $userRole }}
+                </span>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <span class="text-xs text-slate-600 font-medium hidden sm:inline">{{ auth()->user()->name ?? 'Usuario' }}</span>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+        <!-- 3. CUERPO DINÁMICO -->
+        <main class="flex-1 p-4 sm:p-6 overflow-y-auto">
+            @yield('content')
+        </main>
+
+    </div>
+
+</body>
+</html>
